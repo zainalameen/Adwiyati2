@@ -1,10 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/router.dart';
 
-/// Persistent shell containing the top and bottom navigation bars that wrap
-/// the 5 core screens (Home, Chatbot, Scan, Treatments, Cabinet).
 class MainScaffold extends StatelessWidget {
   final Widget child;
 
@@ -27,53 +26,78 @@ class MainScaffold extends StatelessWidget {
     final index = _currentIndex(context);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.account_circle_outlined),
-          onPressed: () => context.push(AppRoutes.profile),
-          tooltip: 'Profile',
-        ),
-        title: const _AppBarTitle(),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () => _showAddMedicationSheet(context),
-            tooltip: 'Add Medication',
-          ),
-        ],
-      ),
+      extendBody: true,
       body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: index,
-        onTap: (i) => _onTabTapped(context, i),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(32),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.surface.withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(color: AppColors.border, width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: BottomNavigationBar(
+                  currentIndex: index,
+                  onTap: (i) => _onTabTapped(context, i),
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  items: [
+                    _buildNavItem(Icons.home_outlined, Icons.home, 0, index),
+                    _buildNavItem(Icons.chat_bubble_outline, Icons.chat_bubble, 1, index),
+                    _buildNavItem(Icons.qr_code_scanner, Icons.qr_code_scanner, 2, index),
+                    _buildNavItem(Icons.medication_outlined, Icons.medication, 3, index),
+                    _buildNavItem(Icons.inventory_2_outlined, Icons.inventory_2, 4, index),
+                  ],
+                ),
+              ),
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline),
-            activeIcon: Icon(Icons.chat_bubble),
-            label: 'Chatbot',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code_scanner),
-            activeIcon: Icon(Icons.qr_code_scanner),
-            label: 'Scan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.medication_outlined),
-            activeIcon: Icon(Icons.medication),
-            label: 'Treatments',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory_2_outlined),
-            activeIcon: Icon(Icons.inventory_2),
-            label: 'Cabinet',
-          ),
-        ],
+        ),
       ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(
+      IconData unselectedIcon, IconData selectedIcon, int itemIndex, int currentIndex) {
+    final isSelected = itemIndex == currentIndex;
+    
+    return BottomNavigationBarItem(
+      icon: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: isSelected ? 12 : 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: ShaderMask(
+          blendMode: isSelected ? BlendMode.srcIn : BlendMode.dst,
+          shaderCallback: (bounds) => isSelected
+              ? AppColors.primaryGradient.createShader(bounds)
+              : const LinearGradient(colors: [AppColors.textSecondary, AppColors.textSecondary])
+                  .createShader(bounds),
+          child: Icon(
+            isSelected ? selectedIcon : unselectedIcon,
+            size: 26,
+            color: isSelected ? Colors.white : AppColors.textSecondary,
+          ),
+        ),
+      ),
+      label: '',
     );
   }
 
@@ -86,79 +110,5 @@ class MainScaffold extends StatelessWidget {
       AppRoutes.cabinet,
     ];
     context.go(routes[index]);
-  }
-
-  void _showAddMedicationSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => const _AddMedicationSheet(),
-    );
-  }
-}
-
-class _AppBarTitle extends StatelessWidget {
-  const _AppBarTitle();
-
-  @override
-  Widget build(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    final title = switch (location) {
-      AppRoutes.home => 'Home',
-      AppRoutes.chatbot => 'AI Assistant',
-      AppRoutes.scan => 'Scan Medication',
-      AppRoutes.treatments => 'Treatments',
-      AppRoutes.cabinet => 'My Cabinet',
-      _ => 'Adwiyati',
-    };
-    return Text(title);
-  }
-}
-
-class _AddMedicationSheet extends StatelessWidget {
-  const _AddMedicationSheet();
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Add Medication',
-              style: Theme.of(context).textTheme.displaySmall,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.medication),
-              label: const Text('Add as Active Treatment'),
-              onPressed: () {
-                Navigator.pop(context);
-                // TODO: navigate to add treatment flow
-              },
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.inventory_2_outlined),
-              label: const Text('Add to Cabinet'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.secondary,
-                side: const BorderSide(color: AppColors.secondary, width: 1.5),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                // TODO: navigate to add cabinet flow
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
