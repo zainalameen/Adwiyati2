@@ -14,6 +14,7 @@ import '../features/auth/pages/reset_password_page.dart';
 import '../features/auth/pages/personal_info_page.dart';
 import '../features/auth/pages/medical_record_page.dart';
 import '../features/home/pages/home_page.dart';
+import '../features/home/pages/progress_page.dart';
 import '../features/chatbot/pages/chatbot_page.dart';
 import '../features/scanner/pages/scanner_page.dart';
 import '../features/treatments/pages/treatments_page.dart';
@@ -41,6 +42,7 @@ abstract final class AppRoutes {
   static const cabinet = '/cabinet';
 
   static const profile = '/profile';
+  static const progress = '/progress';
 
   /// Routes that do NOT require authentication.
   static const publicRoutes = {
@@ -117,6 +119,13 @@ GoRouter createRouter(Ref ref) {
         path: AppRoutes.profile,
         name: 'profile',
         builder: (context, state) => const ProfilePage(),
+      ),
+
+      // ── Progress (gamification details) ─────────────────────────────────
+      GoRoute(
+        path: AppRoutes.progress,
+        name: 'progress',
+        builder: (context, state) => const ProgressPage(),
       ),
 
       // ── Core shell — 5 bottom-nav screens ──────────────────────────────

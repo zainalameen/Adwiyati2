@@ -22,4 +22,5 @@ final class SupabaseService {
   static const String medicationUsesTable = 'medication_uses';
   static const String treatmentUseTable = 'treatment_use';
   static const String medicationSideEffectsTable = 'medication_side_effects';
+  static const String userAchievementTable = 'user_achievement';
 }
