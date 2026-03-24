@@ -75,9 +75,10 @@ class AuthService {
   // ── FR8 — Forgot / Reset password ──────────────────────────────────────
 
   /// Sends a password-reset email.
-  Future<void> sendPasswordResetEmail(String email) async {
+  /// [redirectTo] must be listed in Supabase Dashboard > Auth > URL Configuration > Redirect URLs.
+  Future<void> sendPasswordResetEmail(String email, {String? redirectTo}) async {
     try {
-      await _auth.resetPasswordForEmail(email);
+      await _auth.resetPasswordForEmail(email, redirectTo: redirectTo);
     } on AuthException catch (e) {
       throw AuthServiceException(_mapAuthError(e));
     }

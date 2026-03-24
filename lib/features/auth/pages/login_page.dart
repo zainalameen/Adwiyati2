@@ -1,10 +1,13 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/router.dart';
 import '../../../services/auth_service.dart';
+import '../widgets/auth_widgets.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -37,7 +40,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Directionality(
       textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(backgroundColor: Colors.transparent),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -48,80 +51,90 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 children: [
                   const SizedBox(height: 8),
                   Text(l.get('welcomeBack'),
-                      style: Theme.of(context).textTheme.displayLarge),
+                          style: Theme.of(context).textTheme.displayLarge)
+                      .animate()
+                      .fadeIn(duration: 400.ms)
+                      .slideY(begin: 0.15),
                   const SizedBox(height: 6),
                   Text(l.get('signInToAccount'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: AppColors.textSecondary)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: AppColors.textSecondary))
+                      .animate()
+                      .fadeIn(duration: 400.ms, delay: 80.ms),
                   const SizedBox(height: 28),
 
                   if (_errorMessage != null) ...[
-                    _ErrorBanner(message: _errorMessage!),
+                    AuthErrorBanner(message: _errorMessage!),
                     const SizedBox(height: 16),
                   ],
 
-                  TextFormField(
-                    controller: _emailCtrl,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: l.get('email'),
-                      hintText: l.get('emailHint'),
-                      prefixIcon: const Icon(Icons.email_outlined),
+                  GlassCard(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _emailCtrl,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: l.get('email'),
+                            hintText: l.get('emailHint'),
+                            prefixIcon: const Icon(Icons.email_outlined),
+                          ),
+                          validator: (v) => (v == null || !v.contains('@'))
+                              ? l.get('invalidEmail')
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _passwordCtrl,
+                          obscureText: _obscurePassword,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) => _submit(),
+                          decoration: InputDecoration(
+                            labelText: l.get('password'),
+                            hintText: l.get('passwordHint'),
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            suffixIcon: IconButton(
+                              icon: Icon(_obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined),
+                              onPressed: () => setState(
+                                  () => _obscurePassword = !_obscurePassword),
+                            ),
+                          ),
+                          validator: (v) => (v == null || v.length < 6)
+                              ? l.get('passwordTooShort')
+                              : null,
+                        ),
+                        const SizedBox(height: 4),
+                        Align(
+                          alignment:
+                              isAr ? Alignment.centerLeft : Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () =>
+                                context.push(AppRoutes.forgotPassword),
+                            child: Text(l.get('forgotPassword')),
+                          ),
+                        ),
+                      ],
                     ),
-                    validator: (v) =>
-                        (v == null || !v.contains('@')) ? l.get('invalidEmail') : null,
-                  ),
-                  const SizedBox(height: 16),
+                  ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
+                  const SizedBox(height: 24),
 
-                  TextFormField(
-                    controller: _passwordCtrl,
-                    obscureText: _obscurePassword,
-                    textInputAction: TextInputAction.done,
-                    onFieldSubmitted: (_) => _submit(),
-                    decoration: InputDecoration(
-                      labelText: l.get('password'),
-                      hintText: l.get('passwordHint'),
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined),
-                        onPressed: () =>
-                            setState(() => _obscurePassword = !_obscurePassword),
-                      ),
-                    ),
-                    validator: (v) =>
-                        (v == null || v.length < 6)
-                            ? l.get('passwordTooShort')
-                            : null,
-                  ),
-                  const SizedBox(height: 4),
-                  Align(
-                    alignment: isAr
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () => context.push(AppRoutes.forgotPassword),
-                      child: Text(l.get('forgotPassword')),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _submit,
-                    child: _isLoading
-                        ? const _ButtonSpinner()
-                        : Text(l.get('signIn')),
-                  ),
+                  GradientButton(
+                    label: l.get('signIn'),
+                    isLoading: _isLoading,
+                    onTap: _submit,
+                  ).animate().fadeIn(duration: 400.ms, delay: 250.ms),
                   const SizedBox(height: 16),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(l.get('dontHaveAccount')),
+                      Text(l.get('dontHaveAccount'),
+                          style: TextStyle(color: AppColors.textSecondary)),
                       TextButton(
                         onPressed: () =>
                             context.pushReplacement(AppRoutes.signup),
@@ -150,57 +163,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             password: _passwordCtrl.text,
           );
       if (!mounted) return;
-      // Auth guard in the router will redirect to home or personal-info
       context.go(AppRoutes.home);
     } on AuthServiceException catch (e) {
       setState(() => _errorMessage = e.message);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-}
-
-class _ButtonSpinner extends StatelessWidget {
-  const _ButtonSpinner();
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(
-      height: 20,
-      width: 20,
-      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-    );
-  }
-}
-
-class _ErrorBanner extends StatelessWidget {
-  final String message;
-  const _ErrorBanner({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.error_outline, color: AppColors.error, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              message,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.error),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
