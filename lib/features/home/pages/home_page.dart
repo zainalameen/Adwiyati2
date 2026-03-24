@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -97,7 +96,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
-                _buildHeader(context),
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   sliver: SliverList(
@@ -132,68 +130,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return SliverAppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      pinned: true,
-      centerTitle: true,
-      title: Text(
-        'Adwiyati',
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          shadows: [
-            Shadow(
-              color: AppColors.primaryLight.withValues(alpha: 0.5),
-              blurRadius: 20,
-            )
-          ],
-        ),
-      ),
-      leading: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GestureDetector(
-          onTap: () => context.push('/profile'),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.border, width: 2),
-              image: const DecorationImage(
-                image: NetworkImage('https://api.dicebear.com/7.x/avataaars/png?seed=Felix'), // Placeholder avatar
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: GestureDetector(
-            onTap: () {
-              // Show add sheet
-            },
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),
-        ),
-      ],
     );
   }
 

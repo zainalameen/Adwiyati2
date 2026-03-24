@@ -20,6 +20,8 @@ import '../features/scanner/pages/scanner_page.dart';
 import '../features/treatments/pages/treatments_page.dart';
 import '../features/cabinet/pages/cabinet_page.dart';
 import '../features/profile/pages/profile_page.dart';
+import '../features/medication/pages/add_treatment_page.dart';
+import '../features/medication/pages/add_cabinet_page.dart';
 import '../shared/widgets/main_scaffold.dart';
 import '../services/profile_service.dart';
 import '../services/supabase_service.dart';
@@ -43,6 +45,8 @@ abstract final class AppRoutes {
 
   static const profile = '/profile';
   static const progress = '/progress';
+  static const addTreatment = '/add-treatment';
+  static const addCabinet = '/add-cabinet';
 
   /// Routes that do NOT require authentication.
   static const publicRoutes = {
@@ -126,6 +130,16 @@ GoRouter createRouter(Ref ref) {
         path: AppRoutes.progress,
         name: 'progress',
         builder: (context, state) => const ProgressPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.addTreatment,
+        name: 'addTreatment',
+        builder: (context, state) => const AddTreatmentPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.addCabinet,
+        name: 'addCabinet',
+        builder: (context, state) => const AddCabinetPage(),
       ),
 
       // ── Core shell — 5 bottom-nav screens ──────────────────────────────
