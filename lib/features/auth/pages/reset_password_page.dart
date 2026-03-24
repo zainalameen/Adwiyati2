@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/l10n/app_localizations.dart';
-import '../../../core/router.dart';
+import '../../../core/router.dart' show AppRoutes, clearPasswordRecoveryFlag;
 import '../../../services/auth_service.dart';
+import '../widgets/auth_widgets.dart';
 
 class ResetPasswordPage extends ConsumerStatefulWidget {
   const ResetPasswordPage({super.key});
@@ -37,7 +39,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
     return Directionality(
       textDirection: isAr ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(backgroundColor: Colors.transparent),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -48,66 +50,67 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                 children: [
                   const SizedBox(height: 16),
                   Text(l.get('resetPassword'),
-                      style: Theme.of(context).textTheme.displayLarge),
+                          style: Theme.of(context).textTheme.displayLarge)
+                      .animate()
+                      .fadeIn(duration: 400.ms)
+                      .slideY(begin: 0.15),
                   const SizedBox(height: 6),
                   Text(l.get('enterNewPassword'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: AppColors.textSecondary)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: AppColors.textSecondary))
+                      .animate()
+                      .fadeIn(duration: 400.ms, delay: 80.ms),
                   const SizedBox(height: 32),
-
                   if (_errorMessage != null) ...[
-                    _ErrorBanner(message: _errorMessage!),
+                    AuthErrorBanner(message: _errorMessage!),
                     const SizedBox(height: 16),
                   ],
-
-                  TextFormField(
-                    controller: _newPasswordCtrl,
-                    obscureText: _obscure,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: l.get('newPassword'),
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscure
-                            ? Icons.visibility_outlined
-                            : Icons.visibility_off_outlined),
-                        onPressed: () =>
-                            setState(() => _obscure = !_obscure),
-                      ),
+                  GlassCard(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _newPasswordCtrl,
+                          obscureText: _obscure,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: l.get('newPassword'),
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            suffixIcon: IconButton(
+                              icon: Icon(_obscure
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined),
+                              onPressed: () =>
+                                  setState(() => _obscure = !_obscure),
+                            ),
+                          ),
+                          validator: (v) => (v == null || v.length < 8)
+                              ? l.get('passwordTooShort')
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _confirmCtrl,
+                          obscureText: true,
+                          textInputAction: TextInputAction.done,
+                          decoration: InputDecoration(
+                            labelText: l.get('confirmNewPassword'),
+                            prefixIcon: const Icon(Icons.lock_outline),
+                          ),
+                          validator: (v) => v != _newPasswordCtrl.text
+                              ? l.get('passwordsDontMatch')
+                              : null,
+                        ),
+                      ],
                     ),
-                    validator: (v) => (v == null || v.length < 8)
-                        ? l.get('passwordTooShort')
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: _confirmCtrl,
-                    obscureText: true,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      labelText: l.get('confirmNewPassword'),
-                      prefixIcon: const Icon(Icons.lock_outline),
-                    ),
-                    validator: (v) => v != _newPasswordCtrl.text
-                        ? l.get('passwordsDontMatch')
-                        : null,
-                  ),
+                  ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
                   const SizedBox(height: 32),
-
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _submit,
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                                strokeWidth: 2, color: Colors.white),
-                          )
-                        : Text(l.get('resetPassword')),
-                  ),
+                  GradientButton(
+                    label: l.get('resetPassword'),
+                    isLoading: _isLoading,
+                    onTap: _submit,
+                  ).animate().fadeIn(duration: 400.ms, delay: 250.ms),
                 ],
               ),
             ),
@@ -128,44 +131,15 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
           .read(authServiceProvider)
           .updatePassword(_newPasswordCtrl.text);
       if (!mounted) return;
+      clearPasswordRecoveryFlag();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Password updated successfully')),
       );
-      context.go(AppRoutes.login);
+      context.go(AppRoutes.home);
     } on AuthServiceException catch (e) {
       setState(() => _errorMessage = e.message);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-}
-
-class _ErrorBanner extends StatelessWidget {
-  final String message;
-  const _ErrorBanner({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.error_outline, color: AppColors.error, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(message,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: AppColors.error)),
-          ),
-        ],
-      ),
-    );
   }
 }

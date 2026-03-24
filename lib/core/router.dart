@@ -179,31 +179,40 @@ GoRouter createRouter(Ref ref) {
 
 // ── Auth redirect logic ──────────────────────────────────────────────────
 
+bool _isPasswordRecovery = false;
+
+void clearPasswordRecoveryFlag() {
+  _isPasswordRecovery = false;
+}
+
 Future<String?> _authRedirect(Ref ref, String location) async {
   final session = SupabaseService.auth.currentSession;
   final isLoggedIn = session != null;
   final isPublic = AppRoutes.publicRoutes.contains(location);
   final isOnboarding = AppRoutes.onboardingRoutes.contains(location);
 
+  if (_isPasswordRecovery) {
+    if (location == AppRoutes.resetPassword) return null;
+    return AppRoutes.resetPassword;
+  }
+
   if (!isLoggedIn && !isPublic) {
     return AppRoutes.welcome;
   }
 
   if (isLoggedIn && isPublic) {
-    // Check if profile exists; if not, send to onboarding
     final profile =
         await ProfileService.instance.getProfile(session.user.id);
     return profile == null ? AppRoutes.personalInfo : AppRoutes.home;
   }
 
   if (isLoggedIn && !isOnboarding && !isPublic) {
-    // For protected routes, ensure profile exists
     final profile =
         await ProfileService.instance.getProfile(session.user.id);
     if (profile == null) return AppRoutes.personalInfo;
   }
 
-  return null; // no redirect
+  return null;
 }
 
 // ── Listenable that triggers GoRouter refresh on auth changes ────────────
@@ -212,7 +221,10 @@ class _GoRouterAuthNotifier extends ChangeNotifier {
   late final StreamSubscription<AuthState> _sub;
 
   _GoRouterAuthNotifier(Ref ref) {
-    _sub = SupabaseService.auth.onAuthStateChange.listen((_) {
+    _sub = SupabaseService.auth.onAuthStateChange.listen((authState) {
+      if (authState.event == AuthChangeEvent.passwordRecovery) {
+        _isPasswordRecovery = true;
+      }
       notifyListeners();
     });
   }
