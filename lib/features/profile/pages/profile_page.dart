@@ -49,6 +49,29 @@ class _ProfileBody extends ConsumerWidget {
     final initials = profile != null
         ? '${profile!.firstName[0]}${profile!.lastName[0]}'.toUpperCase()
         : '?';
+        
+    final isAr = l.isArabic;
+    final allergiesAsync = ref.watch(allergiesConditionsProvider);
+    final userAllergyIdsAsync = ref.watch(userAllergyConditionIdsProvider);
+    
+    String allergiesText = l.get('notSet');
+    String conditionsText = l.get('notSet');
+
+    if (allergiesAsync.isLoading || userAllergyIdsAsync.isLoading) {
+      allergiesText = l.get('loading');
+      conditionsText = l.get('loading');
+    } else if (allergiesAsync.hasValue && userAllergyIdsAsync.hasValue) {
+      final allItems = allergiesAsync.value!;
+      final userIds = userAllergyIdsAsync.value!;
+      
+      final userItems = allItems.where((i) => userIds.contains(i.allergyConditionId)).toList();
+      
+      final allergies = userItems.where((i) => i.type == AllergyConditionType.allergy).map((i) => isAr ? (i.nameAr ?? i.name) : i.name).toList();
+      final conditions = userItems.where((i) => i.type == AllergyConditionType.condition).map((i) => isAr ? (i.nameAr ?? i.name) : i.name).toList();
+
+      if (allergies.isNotEmpty) allergiesText = allergies.join(', ');
+      if (conditions.isNotEmpty) conditionsText = conditions.join(', ');
+    }
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -139,6 +162,14 @@ class _ProfileBody extends ConsumerWidget {
                   value:
                       profile?.pregnant == true ? l.get('yes') : l.get('no'),
                 ),
+              _InfoRow(
+                label: l.get('allergies'),
+                value: allergiesText,
+              ),
+              _InfoRow(
+                label: l.get('conditions'),
+                value: conditionsText,
+              ),
             ]),
             const SizedBox(height: 8),
             _ProfileTile(
@@ -1117,13 +1148,21 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
                 ?.copyWith(color: AppColors.textSecondary)),
-        Text(value, style: Theme.of(context).textTheme.bodyMedium),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.end,
+          ),
+        ),
       ],
     );
   }
