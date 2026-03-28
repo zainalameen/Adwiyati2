@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,12 +18,15 @@ import '../features/home/pages/home_page.dart';
 import '../features/home/pages/progress_page.dart';
 import '../features/chatbot/pages/chatbot_page.dart';
 import '../features/scanner/pages/scanner_page.dart';
+import '../features/treatments/pages/treatment_details_page.dart';
 import '../features/treatments/pages/treatments_page.dart';
+import '../features/cabinet/pages/cabinet_medication_details_page.dart';
 import '../features/cabinet/pages/cabinet_page.dart';
 import '../features/profile/pages/profile_page.dart';
 import '../features/medication/pages/add_treatment_page.dart';
 import '../features/medication/pages/add_cabinet_page.dart';
 import '../shared/widgets/main_scaffold.dart';
+import 'models/user_model.dart';
 import '../services/profile_service.dart';
 import '../services/supabase_service.dart';
 
@@ -48,6 +52,14 @@ abstract final class AppRoutes {
   static const addTreatment = '/add-treatment';
   static const addCabinet = '/add-cabinet';
 
+  /// Full-screen treatment editor (outside bottom shell).
+  static String treatmentDetails(String treatmentId) =>
+      '/treatment-details/$treatmentId';
+
+  /// Cabinet medication details (outside bottom shell).
+  static String cabinetMedicationDetails(String cabinetMedId) =>
+      '/cabinet-med/$cabinetMedId';
+
   /// Routes that do NOT require authentication.
   static const publicRoutes = {
     welcome,
@@ -72,7 +84,7 @@ GoRouter createRouter(Ref ref) {
     debugLogDiagnostics: true,
     refreshListenable: _GoRouterAuthNotifier(ref),
     redirect: (context, state) =>
-        _authRedirect(ref, state.matchedLocation),
+        _authRedirect(ref, _normalizeMatchedLocation(state.matchedLocation)),
     routes: [
       // ── Auth flow ──────────────────────────────────────────────────────
       GoRoute(
@@ -142,6 +154,22 @@ GoRouter createRouter(Ref ref) {
         builder: (context, state) => const AddCabinetPage(),
       ),
 
+      GoRoute(
+        path: '/treatment-details/:treatmentId',
+        name: 'treatmentDetails',
+        builder: (context, state) => TreatmentDetailsPage(
+          treatmentId: state.pathParameters['treatmentId']!,
+        ),
+      ),
+
+      GoRoute(
+        path: '/cabinet-med/:cabinetMedId',
+        name: 'cabinetMedicationDetails',
+        builder: (context, state) => CabinetMedicationDetailsPage(
+          cabinetMedId: state.pathParameters['cabinetMedId']!,
+        ),
+      ),
+
       // ── Core shell — 5 bottom-nav screens ──────────────────────────────
       ShellRoute(
         builder: (context, state, child) => MainScaffold(child: child),
@@ -179,6 +207,11 @@ GoRouter createRouter(Ref ref) {
 
 // ── Auth redirect logic ──────────────────────────────────────────────────
 
+/// GoRouter passes [GoRouterState.matchedLocation] as [Uri.path]. On web the root
+/// URL can yield `''` instead of `'/'`, which would not match [AppRoutes.publicRoutes].
+String _normalizeMatchedLocation(String location) =>
+    location.isEmpty ? '/' : location;
+
 bool _isPasswordRecovery = false;
 
 void clearPasswordRecoveryFlag() {
@@ -201,18 +234,30 @@ Future<String?> _authRedirect(Ref ref, String location) async {
   }
 
   if (isLoggedIn && isPublic) {
-    final profile =
-        await ProfileService.instance.getProfile(session.user.id);
+    final profile = await _getProfileForRedirect(session.user.id);
     return profile == null ? AppRoutes.personalInfo : AppRoutes.home;
   }
 
   if (isLoggedIn && !isOnboarding && !isPublic) {
-    final profile =
-        await ProfileService.instance.getProfile(session.user.id);
+    final profile = await _getProfileForRedirect(session.user.id);
     if (profile == null) return AppRoutes.personalInfo;
   }
 
   return null;
+}
+
+/// Used only from [GoRouter.redirect]. Avoids an indefinite white screen when
+/// Supabase is misconfigured or the network never completes.
+Future<UserModel?> _getProfileForRedirect(String userId) async {
+  try {
+    return await ProfileService.instance
+        .getProfile(userId)
+        .timeout(const Duration(seconds: 15));
+  } on Object catch (e, st) {
+    debugPrint('Auth redirect: profile fetch failed: $e');
+    debugPrint('$st');
+    return null;
+  }
 }
 
 // ── Listenable that triggers GoRouter refresh on auth changes ────────────
