@@ -23,7 +23,8 @@ class ProgressCard extends StatefulWidget {
   State<ProgressCard> createState() => _ProgressCardState();
 }
 
-class _ProgressCardState extends State<ProgressCard> with SingleTickerProviderStateMixin {
+class _ProgressCardState extends State<ProgressCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -34,9 +35,10 @@ class _ProgressCardState extends State<ProgressCard> with SingleTickerProviderSt
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    _animation = Tween<double>(begin: 0, end: widget.adherencePercent / 100.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic),
-    );
+    _animation = Tween<double>(begin: 0, end: widget.adherencePercent / 100.0)
+        .animate(
+          CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic),
+        );
     _controller.forward();
   }
 
@@ -44,10 +46,13 @@ class _ProgressCardState extends State<ProgressCard> with SingleTickerProviderSt
   void didUpdateWidget(ProgressCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.adherencePercent != widget.adherencePercent) {
-      _animation = Tween<double>(
-        begin: _animation.value,
-        end: widget.adherencePercent / 100.0,
-      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+      _animation =
+          Tween<double>(
+            begin: _animation.value,
+            end: widget.adherencePercent / 100.0,
+          ).animate(
+            CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+          );
       _controller.forward(from: 0);
     }
   }
@@ -62,116 +67,126 @@ class _ProgressCardState extends State<ProgressCard> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onTap,
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          gradient: AppColors.progressGradient,
-          borderRadius: BorderRadius.circular(32),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.25),
-              blurRadius: 24,
-              offset: const Offset(0, 12),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.bar_chart_rounded,
-                      color: Colors.white, size: 20),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Progress Log',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                      ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.chevron_right,
-                      color: Colors.white, size: 20),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, child) {
-                      return CustomPaint(
-                        painter: _CircularProgressPainter(
-                          progress: _animation.value,
-                        ),
-                        child: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '${(_animation.value * 100).toInt()}%',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displayMedium
-                                    ?.copyWith(
-                                      color: Colors.white,
-                                    ),
-                              ),
-                              Text(
-                                'Adherence',
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.8),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _StatChip(
-                      value: '${widget.taken} / ${widget.scheduled}',
-                      label: 'Doses Taken',
-                      icon: Icons.medication,
-                      iconColor: Colors.white,
-                    ),
-                    const SizedBox(height: 12),
-                    _StatChip(
-                      value: '${widget.streak} Days',
-                      label: 'Current Streak',
-                      icon: Icons.local_fire_department,
-                      iconColor: const Color(0xFFFDE047),
+      child:
+          Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: AppColors.progressGradient,
+                  borderRadius: BorderRadius.circular(32),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.25),
+                      blurRadius: 24,
+                      offset: const Offset(0, 12),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ],
-        ),
-      ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.1, curve: Curves.easeOut),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.bar_chart_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Progress Log',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.copyWith(color: Colors.white),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.chevron_right,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SizedBox(
+                          width: 120,
+                          height: 120,
+                          child: AnimatedBuilder(
+                            animation: _animation,
+                            builder: (context, child) {
+                              return CustomPaint(
+                                painter: _CircularProgressPainter(
+                                  progress: _animation.value,
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '${(_animation.value * 100).toInt()}%',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayMedium
+                                            ?.copyWith(color: Colors.white),
+                                      ),
+                                      Text(
+                                        'Adherence',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.8,
+                                          ),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _StatChip(
+                              value: '${widget.taken} / ${widget.scheduled}',
+                              label: 'Doses Taken',
+                              icon: Icons.medication,
+                              iconColor: Colors.white,
+                            ),
+                            const SizedBox(height: 12),
+                            _StatChip(
+                              value: '${widget.streak} Days',
+                              label: 'Current Streak',
+                              icon: Icons.local_fire_department,
+                              iconColor: const Color(0xFFFDE047),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .slideY(begin: 0.1, curve: Curves.easeOut),
     );
   }
 }

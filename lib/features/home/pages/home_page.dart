@@ -52,9 +52,9 @@ class _HomePageState extends ConsumerState<HomePage> {
       ref.invalidate(userProfileProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to mark dose: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to mark dose: $e')));
       }
     }
   }
@@ -65,9 +65,9 @@ class _HomePageState extends ConsumerState<HomePage> {
       ref.invalidate(dosesForDateProvider);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to skip dose: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to skip dose: $e')));
       }
     }
   }
@@ -81,9 +81,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.background,
-        ),
+        decoration: const BoxDecoration(color: AppColors.background),
         child: SafeArea(
           bottom: false,
           child: RefreshIndicator(
@@ -117,11 +115,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                         streak: profileAsync.when(
                           data: (p) => p?.currentStreak ?? 0,
                           loading: () => 0,
-                          error: (_, __) => 0,
+                          error: (_, _) => 0,
                         ),
                         onTap: () => context.push('/progress'),
                       ),
-                      const SizedBox(height: 100), // Padding for floating nav bar
+                      const SizedBox(
+                        height: 100,
+                      ), // Padding for floating nav bar
                     ]),
                   ),
                 ),
@@ -138,43 +138,51 @@ class _HomePageState extends ConsumerState<HomePage> {
     AsyncValue<List<DoseWithMedication>> dosesAsync,
   ) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.medication,
+                    size: 18,
+                    color: AppColors.primary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'To Take',
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            dosesAsync.when(
+              skipLoadingOnRefresh: true,
+              loading: () => const _DoseLoadingPlaceholder(),
+              error: (e, _) => Center(
+                child: Text(
+                  'Could not load doses',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.error),
+                ),
               ),
-              child: const Icon(Icons.medication,
-                  size: 18, color: AppColors.primary),
+              data: (doses) {
+                if (doses.isEmpty) return _buildEmptyDoses(context);
+                return _buildDoseList(context, doses);
+              },
             ),
-            const SizedBox(width: 12),
-            Text('To Take', style: Theme.of(context).textTheme.displaySmall),
           ],
-        ),
-        const SizedBox(height: 20),
-        dosesAsync.when(
-          skipLoadingOnRefresh: true,
-          loading: () => const _DoseLoadingPlaceholder(),
-          error: (e, _) => Center(
-            child: Text(
-              'Could not load doses',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.error),
-            ),
-          ),
-          data: (doses) {
-            if (doses.isEmpty) return _buildEmptyDoses(context);
-            return _buildDoseList(context, doses);
-          },
-        ),
-      ],
-    ).animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.1, curve: Curves.easeOut);
+        )
+        .animate()
+        .fadeIn(duration: 500.ms, delay: 100.ms)
+        .slideY(begin: 0.1, curve: Curves.easeOut);
   }
 
   Widget _buildEmptyDoses(BuildContext context) {
@@ -200,10 +208,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           const SizedBox(height: 8),
           Text(
             'No more doses scheduled for today.',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.textSecondary),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 16),
         ],
@@ -217,7 +224,12 @@ class _HomePageState extends ConsumerState<HomePage> {
       grouped.putIfAbsent(dose.timeCategory, () => []).add(dose);
     }
 
-    const order = ['After Breakfast', 'After Lunch', 'After Dinner', 'Before Bed'];
+    const order = [
+      'After Breakfast',
+      'After Lunch',
+      'After Dinner',
+      'Before Bed',
+    ];
     final sortedKeys = grouped.keys.toList()
       ..sort((a, b) => order.indexOf(a).compareTo(order.indexOf(b)));
 
@@ -239,31 +251,37 @@ class _HomePageState extends ConsumerState<HomePage> {
     int index,
   ) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 12, top: 8),
-          child: Text(
-            category,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 12, top: 8),
+              child: Text(
+                category,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: AppColors.textSecondary,
                   letterSpacing: 0.5,
                 ),
-          ),
-        ),
-        ...doses.map(
-          (dose) => DoseTile(
-            dose: dose,
-            onTaken: dose.status == DoseReminderStatus.pending
-                ? () => _onDoseTaken(dose)
-                : null,
-            onSkipped: dose.status == DoseReminderStatus.pending
-                ? () => _onDoseSkipped(dose)
-                : null,
-          ),
-        ),
-      ],
-    ).animate().fadeIn(duration: 400.ms, delay: Duration(milliseconds: 150 + (index * 100))).slideY(begin: 0.1);
+              ),
+            ),
+            ...doses.map(
+              (dose) => DoseTile(
+                dose: dose,
+                onTaken: dose.status == DoseReminderStatus.pending
+                    ? () => _onDoseTaken(dose)
+                    : null,
+                onSkipped: dose.status == DoseReminderStatus.pending
+                    ? () => _onDoseSkipped(dose)
+                    : null,
+              ),
+            ),
+          ],
+        )
+        .animate()
+        .fadeIn(
+          duration: 400.ms,
+          delay: Duration(milliseconds: 150 + (index * 100)),
+        )
+        .slideY(begin: 0.1);
   }
 }
 
@@ -281,10 +299,9 @@ class _DoseLoadingPlaceholder extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Loading doses...',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
           ],
         ),

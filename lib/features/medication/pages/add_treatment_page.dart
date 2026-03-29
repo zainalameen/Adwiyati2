@@ -29,7 +29,13 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
   DateTime? _expiryDate;
 
   String? _selectedPurpose;
-  final _purposes = const ['Headache', 'Fever', 'Allergy', 'Infection', 'General'];
+  final _purposes = const [
+    'Headache',
+    'Fever',
+    'Allergy',
+    'Infection',
+    'General',
+  ];
   _DurationMode _durationMode = _DurationMode.endDate;
   DateTime? _endDate;
   final _specificQtyCtrl = TextEditingController();
@@ -50,12 +56,10 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
   }
 
   Future<void> _loadMedications() async {
-    final meds = await MedicationManagementService.instance.fetchMedicationOptions();
+    final meds = await MedicationManagementService.instance
+        .fetchMedicationOptions();
     if (!mounted) return;
-    final forms = meds
-        .map((m) => _normalizeForm(m.dosageForm))
-        .toSet()
-        .toList()
+    final forms = meds.map((m) => _normalizeForm(m.dosageForm)).toSet().toList()
       ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
     setState(() {
       _medications = meds;
@@ -99,7 +103,10 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('How do you want to add?', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'How do you want to add?',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 20),
         _ChoiceButton(
           label: 'Scan medication',
@@ -132,14 +139,19 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Medication Information', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'Medication Information',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 16),
         const Text('Medication Name'),
         const SizedBox(height: 8),
         DropdownButtonFormField<MedicationOption>(
           value: _selectedMedication,
           items: _medications
-              .map((m) => DropdownMenuItem(value: m, child: Text(m.tradeNameEn)))
+              .map(
+                (m) => DropdownMenuItem(value: m, child: Text(m.tradeNameEn)),
+              )
               .toList(),
           onChanged: (value) async {
             if (value == null) return;
@@ -147,10 +159,11 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
 
             bool proceed = true;
             if (user != null) {
-              final hasInteraction = await MedicationManagementService.instance.hasPotentialInteraction(
-                userId: user.id,
-                medicationId: value.id,
-              );
+              final hasInteraction = await MedicationManagementService.instance
+                  .hasPotentialInteraction(
+                    userId: user.id,
+                    medicationId: value.id,
+                  );
               if (hasInteraction && mounted) {
                 proceed = await _showInteractionWarning() ?? false;
               }
@@ -174,10 +187,9 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
         if (_dosageForms.isEmpty)
           Text(
             'No dosage forms available',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: AppColors.textSecondary),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
           )
         else
           Wrap(
@@ -221,7 +233,10 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quantity & Expiration Date', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'Quantity & Expiration Date',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _quantityCtrl,
@@ -250,7 +265,9 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
               labelText: 'Expiration Date',
               border: OutlineInputBorder(),
             ),
-            child: Text(_expiryDate == null ? 'dd/mm/yyyy' : _fmtDate(_expiryDate!)),
+            child: Text(
+              _expiryDate == null ? 'dd/mm/yyyy' : _fmtDate(_expiryDate!),
+            ),
           ),
         ),
         const SizedBox(height: 24),
@@ -273,13 +290,18 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Purpose of Use & Dose Reminders', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'Purpose of Use & Dose Reminders',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 16),
         const Text('Purpose of Use'),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           value: _selectedPurpose,
-          items: _purposes.map((p) => DropdownMenuItem(value: p, child: Text(p))).toList(),
+          items: _purposes
+              .map((p) => DropdownMenuItem(value: p, child: Text(p)))
+              .toList(),
           onChanged: (value) => setState(() => _selectedPurpose = value),
           decoration: const InputDecoration(
             hintText: 'Select purpose',
@@ -311,7 +333,9 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
                 labelText: 'End Date',
                 border: OutlineInputBorder(),
               ),
-              child: Text(_endDate == null ? 'dd/mm/yyyy' : _fmtDate(_endDate!)),
+              child: Text(
+                _endDate == null ? 'dd/mm/yyyy' : _fmtDate(_endDate!),
+              ),
             ),
           ),
         ],
@@ -333,22 +357,26 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
             const Text('Dose Reminders'),
             const Spacer(),
             TextButton.icon(
-              onPressed: () => setState(() => _reminders.add(const _ReminderDraft())),
+              onPressed: () =>
+                  setState(() => _reminders.add(const _ReminderDraft())),
               icon: const Icon(Icons.add),
               label: const Text('Add Reminder'),
             ),
           ],
         ),
         const SizedBox(height: 8),
-        ...List.generate(_reminders.length, (i) => _ReminderEditor(
-              key: ValueKey('reminder_$i'),
-              index: i,
-              reminder: _reminders[i],
-              onChanged: (updated) => _reminders[i] = updated,
-              onRemove: _reminders.length == 1
-                  ? null
-                  : () => setState(() => _reminders.removeAt(i)),
-            )),
+        ...List.generate(
+          _reminders.length,
+          (i) => _ReminderEditor(
+            key: ValueKey('reminder_$i'),
+            index: i,
+            reminder: _reminders[i],
+            onChanged: (updated) => _reminders[i] = updated,
+            onRemove: _reminders.length == 1
+                ? null
+                : () => setState(() => _reminders.removeAt(i)),
+          ),
+        ),
         const SizedBox(height: 24),
         _PrimaryButton(
           label: _loading ? 'Saving...' : 'Finish',
@@ -366,15 +394,21 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
           border: Border.all(
-            color: _durationMode == value ? AppColors.primary : AppColors.border,
+            color: _durationMode == value
+                ? AppColors.primary
+                : AppColors.border,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           children: [
             Icon(
-              _durationMode == value ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: _durationMode == value ? AppColors.primary : AppColors.textSecondary,
+              _durationMode == value
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_off,
+              color: _durationMode == value
+                  ? AppColors.primary
+                  : AppColors.textSecondary,
             ),
             const SizedBox(width: 8),
             Text(label),
@@ -392,7 +426,10 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
       _showError('Session expired. Please login again.');
       return;
     }
-    if (_selectedMedication == null || quantity == null || quantity <= 0 || _expiryDate == null) {
+    if (_selectedMedication == null ||
+        quantity == null ||
+        quantity <= 0 ||
+        _expiryDate == null) {
       _showError('Please complete required fields.');
       return;
     }
@@ -408,7 +445,8 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
     final specificQty = _durationMode == _DurationMode.specificQuantity
         ? int.tryParse(_specificQtyCtrl.text.trim())
         : null;
-    if (_durationMode == _DurationMode.specificQuantity && (specificQty == null || specificQty <= 0)) {
+    if (_durationMode == _DurationMode.specificQuantity &&
+        (specificQty == null || specificQty <= 0)) {
       _showError('Please enter a valid specific quantity.');
       return;
     }
@@ -439,9 +477,9 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
             .toList(),
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Treatment created')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Treatment created')));
       context.pop();
     } catch (_) {
       _showError('Could not create treatment.');
@@ -460,15 +498,23 @@ class _AddTreatmentPageState extends State<AddTreatmentPage> {
           'Please consult your doctor before proceeding.',
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('Proceed Anyway')),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Proceed Anyway'),
+          ),
         ],
       ),
     );
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   String _normalizeForm(String form) {
@@ -531,7 +577,9 @@ class _ReminderEditorState extends State<_ReminderEditor> {
   @override
   void initState() {
     super.initState();
-    _qtyCtrl = TextEditingController(text: widget.reminder.quantityPerDose.toString());
+    _qtyCtrl = TextEditingController(
+      text: widget.reminder.quantityPerDose.toString(),
+    );
   }
 
   @override
@@ -554,10 +602,16 @@ class _ReminderEditorState extends State<_ReminderEditor> {
         children: [
           Row(
             children: [
-              Text('Reminder ${widget.index + 1}', style: const TextStyle(fontWeight: FontWeight.w600)),
+              Text(
+                'Reminder ${widget.index + 1}',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
               const Spacer(),
               if (widget.onRemove != null)
-                IconButton(onPressed: widget.onRemove, icon: const Icon(Icons.close)),
+                IconButton(
+                  onPressed: widget.onRemove,
+                  icon: const Icon(Icons.close),
+                ),
             ],
           ),
           const SizedBox(height: 8),
@@ -585,7 +639,10 @@ class _ReminderEditorState extends State<_ReminderEditor> {
             value: widget.reminder.frequency,
             items: const [
               DropdownMenuItem(value: 'Daily', child: Text('Daily')),
-              DropdownMenuItem(value: 'Every 2 Days', child: Text('Every 2 Days')),
+              DropdownMenuItem(
+                value: 'Every 2 Days',
+                child: Text('Every 2 Days'),
+              ),
             ],
             onChanged: (value) {
               if (value == null) return;
@@ -606,7 +663,9 @@ class _ReminderEditorState extends State<_ReminderEditor> {
             ),
             onChanged: (value) {
               final parsed = double.tryParse(value.trim());
-              widget.onChanged(widget.reminder.copyWith(quantityPerDose: parsed ?? 0));
+              widget.onChanged(
+                widget.reminder.copyWith(quantityPerDose: parsed ?? 0),
+              );
             },
           ),
         ],
@@ -668,7 +727,9 @@ class _ChoiceButton extends StatelessWidget {
         height: 52,
         decoration: BoxDecoration(
           gradient: selected && gradient ? AppColors.primaryGradient : null,
-          color: selected && !gradient ? AppColors.surfaceVariant : AppColors.surface,
+          color: selected && !gradient
+              ? AppColors.surfaceVariant
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: selected ? AppColors.primary : AppColors.border,
@@ -679,7 +740,9 @@ class _ChoiceButton extends StatelessWidget {
             label,
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: selected && gradient ? Colors.white : AppColors.textPrimary,
+              color: selected && gradient
+                  ? Colors.white
+                  : AppColors.textPrimary,
             ),
           ),
         ),
@@ -712,9 +775,14 @@ class _PrimaryButton extends StatelessWidget {
             foregroundColor: Colors.white,
             disabledBackgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
         ),
       ),
     );

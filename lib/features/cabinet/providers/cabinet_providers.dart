@@ -10,8 +10,10 @@ final cabinetListProvider = FutureProvider<List<CabinetEntry>>((ref) async {
   return CabinetService.instance.listCabinetForUser(user.id);
 });
 
-final cabinetDetailProvider =
-    FutureProvider.family<CabinetEntry?, String>((ref, cabinetMedId) async {
+final cabinetDetailProvider = FutureProvider.family<CabinetEntry?, String>((
+  ref,
+  cabinetMedId,
+) async {
   final user = SupabaseService.auth.currentUser;
   if (user == null) return null;
   return CabinetService.instance.getCabinetEntry(cabinetMedId, user.id);

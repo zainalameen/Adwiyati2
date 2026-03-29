@@ -28,10 +28,12 @@ class WelcomePage extends ConsumerWidget {
                 children: [
                   const SizedBox(height: 16),
                   Align(
-                    alignment:
-                        isAr ? Alignment.centerLeft : Alignment.centerRight,
+                    alignment: isAr
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () => ref.read(localeProvider.notifier).toggle(),
+                      onPressed: () =>
+                          ref.read(localeProvider.notifier).toggle(),
                       child: Text(
                         l.get('language'),
                         style: const TextStyle(
@@ -44,36 +46,45 @@ class WelcomePage extends ConsumerWidget {
                   ),
                   const Spacer(flex: 2),
                   Container(
-                    width: 110,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(32),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.4),
-                          blurRadius: 32,
-                          offset: const Offset(0, 12),
+                        width: 110,
+                        height: 110,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.primaryGradient,
+                          borderRadius: BorderRadius.circular(32),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.4),
+                              blurRadius: 32,
+                              offset: const Offset(0, 12),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: const Icon(Icons.medication_rounded,
-                        color: Colors.white, size: 56),
-                  )
+                        child: const Icon(
+                          Icons.medication_rounded,
+                          color: Colors.white,
+                          size: 56,
+                        ),
+                      )
                       .animate()
                       .fadeIn(duration: 600.ms)
-                      .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack),
+                      .scale(
+                        begin: const Offset(0.8, 0.8),
+                        curve: Curves.easeOutBack,
+                      ),
                   const SizedBox(height: 28),
                   Text(
-                    l.get('appName'),
-                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800,
-                      foreground: Paint()
-                        ..shader = AppColors.primaryGradient.createShader(
-                            const Rect.fromLTWH(0, 0, 200, 50)),
-                    ),
-                  )
+                        l.get('appName'),
+                        style: Theme.of(context).textTheme.displayLarge
+                            ?.copyWith(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w800,
+                              foreground: Paint()
+                                ..shader = AppColors.primaryGradient
+                                    .createShader(
+                                      const Rect.fromLTWH(0, 0, 200, 50),
+                                    ),
+                            ),
+                      )
                       .animate()
                       .fadeIn(duration: 500.ms, delay: 200.ms)
                       .slideY(begin: 0.2),
@@ -81,20 +92,26 @@ class WelcomePage extends ConsumerWidget {
                   Text(
                     l.get('appTagline'),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
+                      color: AppColors.textSecondary,
+                    ),
                     textAlign: TextAlign.center,
                   ).animate().fadeIn(duration: 500.ms, delay: 300.ms),
                   const Spacer(flex: 3),
                   _GradientButton(
-                    label: l.get('signIn'),
-                    onTap: () => context.push(AppRoutes.login),
-                  ).animate().fadeIn(duration: 400.ms, delay: 400.ms).slideY(begin: 0.2),
+                        label: l.get('signIn'),
+                        onTap: () => context.push(AppRoutes.login),
+                      )
+                      .animate()
+                      .fadeIn(duration: 400.ms, delay: 400.ms)
+                      .slideY(begin: 0.2),
                   const SizedBox(height: 12),
                   _GlassOutlineButton(
-                    label: l.get('signUp'),
-                    onTap: () => context.push(AppRoutes.signup),
-                  ).animate().fadeIn(duration: 400.ms, delay: 500.ms).slideY(begin: 0.2),
+                        label: l.get('signUp'),
+                        onTap: () => context.push(AppRoutes.signup),
+                      )
+                      .animate()
+                      .fadeIn(duration: 400.ms, delay: 500.ms)
+                      .slideY(begin: 0.2),
                   const SizedBox(height: 48),
                 ],
               ),
@@ -130,9 +147,14 @@ class _GradientButton extends StatelessWidget {
           ],
         ),
         alignment: Alignment.center,
-        child: Text(label,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700)),
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }
@@ -160,11 +182,14 @@ class _GlassOutlineButton extends StatelessWidget {
               border: Border.all(color: AppColors.border),
             ),
             alignment: Alignment.center,
-            child: Text(label,
-                style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700)),
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ),
       ),

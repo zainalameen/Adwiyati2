@@ -31,13 +31,11 @@ class _ChatbotPageState extends State<ChatbotPage> {
                   controller: _scrollController,
                   padding: const EdgeInsets.all(16),
                   itemCount: _messages.length,
-                  itemBuilder: (_, i) => _ChatBubble(message: _messages[i]),
+                  itemBuilder: (_, index) =>
+                      _ChatBubble(message: _messages[index]),
                 ),
         ),
-        _MessageInput(
-          controller: _messageController,
-          onSend: _sendMessage,
-        ),
+        _MessageInput(controller: _messageController, onSend: _sendMessage),
       ],
     );
   }
@@ -48,7 +46,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
     setState(() {
       _messages.add(_ChatMessage(text: text, isUser: true));
       _messageController.clear();
-      // TODO: call AI chatbot service
+      // TODO: send user message to symptom / medication Q&A backend and append
+      // assistant replies to [_messages].
     });
   }
 }
@@ -71,21 +70,23 @@ class _WelcomePrompt extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.smart_toy_outlined,
-                size: 64, color: AppColors.secondary),
+            const Icon(
+              Icons.medical_information_outlined,
+              size: 64,
+              color: AppColors.secondary,
+            ),
             const SizedBox(height: 16),
             Text(
-              'Adwiyati AI Assistant',
+              'Adwiyati Health Assistant',
               style: Theme.of(context).textTheme.displaySmall,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               'Ask me about your medications, symptoms, or side effects.',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
           ],
@@ -103,8 +104,7 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment:
-          message.isUser ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -127,8 +127,8 @@ class _ChatBubble extends StatelessWidget {
         child: Text(
           message.text,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: message.isUser ? Colors.white : AppColors.textPrimary,
-              ),
+            color: message.isUser ? Colors.white : AppColors.textPrimary,
+          ),
         ),
       ),
     );
@@ -166,8 +166,10 @@ class _MessageInput extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                 ),
               ),
             ),

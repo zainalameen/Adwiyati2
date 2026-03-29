@@ -34,7 +34,8 @@ class AuthService {
       if (res.user != null &&
           (res.user!.identities == null || res.user!.identities!.isEmpty)) {
         throw AuthServiceException(
-            'An account with this email already exists.');
+          'An account with this email already exists.',
+        );
       }
 
       return res;
@@ -76,7 +77,10 @@ class AuthService {
 
   /// Sends a password-reset email.
   /// [redirectTo] must be listed in Supabase Dashboard > Auth > URL Configuration > Redirect URLs.
-  Future<void> sendPasswordResetEmail(String email, {String? redirectTo}) async {
+  Future<void> sendPasswordResetEmail(
+    String email, {
+    String? redirectTo,
+  }) async {
     try {
       await _auth.resetPasswordForEmail(email, redirectTo: redirectTo);
     } on AuthException catch (e) {

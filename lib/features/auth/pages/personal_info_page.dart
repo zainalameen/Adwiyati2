@@ -62,103 +62,110 @@ class _PersonalInfoPageState extends ConsumerState<PersonalInfoPage> {
                 children: [
                   const StepIndicator(currentStep: 1, totalSteps: 2),
                   const SizedBox(height: 24),
-                  Text(l.get('personalInfo'),
-                          style: Theme.of(context).textTheme.displayLarge)
-                      .animate()
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.15),
+                  Text(
+                    l.get('personalInfo'),
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.15),
                   const SizedBox(height: 6),
-                  Text(l.get('tellUsAboutYou'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: AppColors.textSecondary))
-                      .animate()
-                      .fadeIn(duration: 400.ms, delay: 80.ms),
+                  Text(
+                    l.get('tellUsAboutYou'),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ).animate().fadeIn(duration: 400.ms, delay: 80.ms),
                   const SizedBox(height: 28),
 
                   GlassCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        TextFormField(
-                          controller: _firstNameCtrl,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            labelText: l.get('firstName'),
-                            prefixIcon: const Icon(Icons.person_outline),
-                          ),
-                          validator: (v) => (v == null || v.trim().isEmpty)
-                              ? l.get('requiredField')
-                              : null,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _lastNameCtrl,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                            labelText: l.get('lastName'),
-                            prefixIcon: const Icon(Icons.person_outline),
-                          ),
-                          validator: (v) => (v == null || v.trim().isEmpty)
-                              ? l.get('requiredField')
-                              : null,
-                        ),
-                        const SizedBox(height: 20),
-
-                        Text(l.get('gender'),
-                            style: Theme.of(context).textTheme.labelLarge),
-                        const SizedBox(height: 10),
-                        Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Expanded(
-                              child: _GenderChip(
-                                label: l.get('male'),
-                                icon: Icons.male_rounded,
-                                selected: _gender == 'Male',
-                                onTap: () => setState(() => _gender = 'Male'),
+                            TextFormField(
+                              controller: _firstNameCtrl,
+                              textInputAction: TextInputAction.next,
+                              textCapitalization: TextCapitalization.words,
+                              decoration: InputDecoration(
+                                labelText: l.get('firstName'),
+                                prefixIcon: const Icon(Icons.person_outline),
                               ),
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? l.get('requiredField')
+                                  : null,
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _GenderChip(
-                                label: l.get('female'),
-                                icon: Icons.female_rounded,
-                                selected: _gender == 'Female',
-                                onTap: () => setState(() => _gender = 'Female'),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _lastNameCtrl,
+                              textInputAction: TextInputAction.next,
+                              textCapitalization: TextCapitalization.words,
+                              decoration: InputDecoration(
+                                labelText: l.get('lastName'),
+                                prefixIcon: const Icon(Icons.person_outline),
+                              ),
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? l.get('requiredField')
+                                  : null,
+                            ),
+                            const SizedBox(height: 20),
+
+                            Text(
+                              l.get('gender'),
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _GenderChip(
+                                    label: l.get('male'),
+                                    icon: Icons.male_rounded,
+                                    selected: _gender == 'Male',
+                                    onTap: () =>
+                                        setState(() => _gender = 'Male'),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _GenderChip(
+                                    label: l.get('female'),
+                                    icon: Icons.female_rounded,
+                                    selected: _gender == 'Female',
+                                    onTap: () =>
+                                        setState(() => _gender = 'Female'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+
+                            GestureDetector(
+                              onTap: _pickDob,
+                              child: AbsorbPointer(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: l.get('dateOfBirth'),
+                                    prefixIcon: const Icon(
+                                      Icons.calendar_today_outlined,
+                                    ),
+                                    hintText: _dob == null
+                                        ? l.get('selectDate')
+                                        : '${_dob!.day}/${_dob!.month}/${_dob!.year}',
+                                  ),
+                                  validator: (_) => _dob == null
+                                      ? l.get('requiredField')
+                                      : null,
+                                  controller: TextEditingController(
+                                    text: _dob == null
+                                        ? ''
+                                        : '${_dob!.day}/${_dob!.month}/${_dob!.year}',
+                                  ),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
-
-                        GestureDetector(
-                          onTap: _pickDob,
-                          child: AbsorbPointer(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: l.get('dateOfBirth'),
-                                prefixIcon: const Icon(
-                                    Icons.calendar_today_outlined),
-                                hintText: _dob == null
-                                    ? l.get('selectDate')
-                                    : '${_dob!.day}/${_dob!.month}/${_dob!.year}',
-                              ),
-                              validator: (_) =>
-                                  _dob == null ? l.get('requiredField') : null,
-                              controller: TextEditingController(
-                                text: _dob == null
-                                    ? ''
-                                    : '${_dob!.day}/${_dob!.month}/${_dob!.year}',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 150.ms)
+                      .slideY(begin: 0.1),
                   const SizedBox(height: 40),
 
                   GradientButton(
@@ -183,9 +190,9 @@ class _PersonalInfoPageState extends ConsumerState<PersonalInfoPage> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  surface: AppColors.surface,
-                ),
+            colorScheme: Theme.of(
+              context,
+            ).colorScheme.copyWith(surface: AppColors.surface),
           ),
           child: child!,
         );
@@ -199,8 +206,10 @@ class _PersonalInfoPageState extends ConsumerState<PersonalInfoPage> {
     if (_gender == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(
-                AppLocalizations(ref.read(localeProvider)).get('requiredField'))),
+          content: Text(
+            AppLocalizations(ref.read(localeProvider)).get('requiredField'),
+          ),
+        ),
       );
       return;
     }
@@ -236,11 +245,11 @@ class _GenderChip extends StatelessWidget {
         height: 52,
         decoration: BoxDecoration(
           gradient: selected ? AppColors.primaryGradient : null,
-          color: selected ? null : AppColors.surfaceVariant.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(14),
-          border: selected
+          color: selected
               ? null
-              : Border.all(color: AppColors.border),
+              : AppColors.surfaceVariant.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(14),
+          border: selected ? null : Border.all(color: AppColors.border),
           boxShadow: selected
               ? [
                   BoxShadow(
@@ -254,15 +263,19 @@ class _GenderChip extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon,
-                size: 20,
-                color: selected ? Colors.white : AppColors.textSecondary),
+            Icon(
+              icon,
+              size: 20,
+              color: selected ? Colors.white : AppColors.textSecondary,
+            ),
             const SizedBox(width: 8),
-            Text(label,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: selected ? Colors.white : AppColors.textPrimary,
-                )),
+            Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: selected ? Colors.white : AppColors.textPrimary,
+              ),
+            ),
           ],
         ),
       ),

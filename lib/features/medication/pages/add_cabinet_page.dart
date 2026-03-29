@@ -40,12 +40,10 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
   }
 
   Future<void> _loadMedications() async {
-    final meds = await MedicationManagementService.instance.fetchMedicationOptions();
+    final meds = await MedicationManagementService.instance
+        .fetchMedicationOptions();
     if (!mounted) return;
-    final forms = meds
-        .map((m) => _normalizeForm(m.dosageForm))
-        .toSet()
-        .toList()
+    final forms = meds.map((m) => _normalizeForm(m.dosageForm)).toSet().toList()
       ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
     setState(() {
       _medications = meds;
@@ -88,7 +86,10 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('How do you want to add?', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'How do you want to add?',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 20),
         _ChoiceButton(
           label: 'Scan medication',
@@ -121,14 +122,19 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Medication Information', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'Medication Information',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 16),
         const Text('Medication Name'),
         const SizedBox(height: 8),
         DropdownButtonFormField<MedicationOption>(
           value: _selectedMedication,
           items: _medications
-              .map((m) => DropdownMenuItem(value: m, child: Text(m.tradeNameEn)))
+              .map(
+                (m) => DropdownMenuItem(value: m, child: Text(m.tradeNameEn)),
+              )
               .toList(),
           onChanged: (value) {
             setState(() {
@@ -150,10 +156,9 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
         if (_dosageForms.isEmpty)
           Text(
             'No dosage forms available',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: AppColors.textSecondary),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
           )
         else
           Wrap(
@@ -197,7 +202,10 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quantity & Expiration Date', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          'Quantity & Expiration Date',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _quantityCtrl,
@@ -226,7 +234,9 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
               labelText: 'Expiration Date',
               border: OutlineInputBorder(),
             ),
-            child: Text(_expiryDate == null ? 'dd/mm/yyyy' : _fmtDate(_expiryDate!)),
+            child: Text(
+              _expiryDate == null ? 'dd/mm/yyyy' : _fmtDate(_expiryDate!),
+            ),
           ),
         ),
         const SizedBox(height: 24),
@@ -246,7 +256,10 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
       _showError('Session expired. Please login again.');
       return;
     }
-    if (_selectedMedication == null || quantity == null || quantity <= 0 || _expiryDate == null) {
+    if (_selectedMedication == null ||
+        quantity == null ||
+        quantity <= 0 ||
+        _expiryDate == null) {
       _showError('Please complete all required fields.');
       return;
     }
@@ -272,7 +285,9 @@ class _AddCabinetPageState extends State<AddCabinetPage> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   String _normalizeForm(String form) {
@@ -340,7 +355,9 @@ class _ChoiceButton extends StatelessWidget {
         height: 52,
         decoration: BoxDecoration(
           gradient: selected && gradient ? AppColors.primaryGradient : null,
-          color: selected && !gradient ? AppColors.surfaceVariant : AppColors.surface,
+          color: selected && !gradient
+              ? AppColors.surfaceVariant
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: selected ? AppColors.primary : AppColors.border,
@@ -351,7 +368,9 @@ class _ChoiceButton extends StatelessWidget {
             label,
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: selected && gradient ? Colors.white : AppColors.textPrimary,
+              color: selected && gradient
+                  ? Colors.white
+                  : AppColors.textPrimary,
             ),
           ),
         ),
@@ -384,9 +403,14 @@ class _PrimaryButton extends StatelessWidget {
             foregroundColor: Colors.white,
             disabledBackgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-          child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
         ),
       ),
     );

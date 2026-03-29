@@ -32,19 +32,22 @@ class CabinetService {
 
     final medMap = {
       for (final m in medRows as List)
-        m['medication_id'] as String:
-            MedicationModel.fromJson(m as Map<String, dynamic>),
+        m['medication_id'] as String: MedicationModel.fromJson(
+          m as Map<String, dynamic>,
+        ),
     };
 
     return cabinets
-        .map((c) => CabinetEntry(
-              cabinet: c,
-              medication: medMap[c.medicationId]!,
-            ))
+        .map(
+          (c) => CabinetEntry(cabinet: c, medication: medMap[c.medicationId]!),
+        )
         .toList();
   }
 
-  Future<CabinetEntry?> getCabinetEntry(String cabinetMedId, String userId) async {
+  Future<CabinetEntry?> getCabinetEntry(
+    String cabinetMedId,
+    String userId,
+  ) async {
     final row = await SupabaseService.db
         .from(SupabaseService.cabinetMedTable)
         .select()
@@ -54,8 +57,7 @@ class CabinetService {
 
     if (row == null) return null;
 
-    final cabinet =
-        CabinetMedModel.fromJson(Map<String, dynamic>.from(row));
+    final cabinet = CabinetMedModel.fromJson(Map<String, dynamic>.from(row));
 
     final medRow = await SupabaseService.db
         .from(SupabaseService.medicationTable)
@@ -91,12 +93,15 @@ class CabinetService {
         .eq('cabinet_med_id', cabinetMedId)
         .eq('user_id', userId);
 
-    await SupabaseService.db.from(SupabaseService.medicationTable).update({
-      'trade_name_en': tradeNameEn,
-      'dosage_form': dosageForm,
-      'dose_amount': doseAmount,
-      'unit': unit,
-    }).eq('medication_id', medicationId);
+    await SupabaseService.db
+        .from(SupabaseService.medicationTable)
+        .update({
+          'trade_name_en': tradeNameEn,
+          'dosage_form': dosageForm,
+          'dose_amount': doseAmount,
+          'unit': unit,
+        })
+        .eq('medication_id', medicationId);
   }
 
   Future<void> deleteCabinetEntry(String cabinetMedId, String userId) async {
@@ -133,22 +138,20 @@ class CabinetService {
     final todayStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
-    await SupabaseService.db
-        .from(SupabaseService.activeTreatmentTable)
-        .insert({
-          'treatment_id': treatmentId,
-          'user_id': userId,
-          'medication_id': medicationId,
-          'start_date': todayStr,
-          'end_date': null,
-          'times_per_day': 1,
-          'interval_days': 1,
-          'current_quantity': currentQuantity,
-          'pills_taken_so_far': 0,
-          'pills_to_take': null,
-          'expiry_date': expiryDate.toIso8601String().split('T').first,
-          'status': 'active',
-        });
+    await SupabaseService.db.from(SupabaseService.activeTreatmentTable).insert({
+      'treatment_id': treatmentId,
+      'user_id': userId,
+      'medication_id': medicationId,
+      'start_date': todayStr,
+      'end_date': null,
+      'times_per_day': 1,
+      'interval_days': 1,
+      'current_quantity': currentQuantity,
+      'pills_taken_so_far': 0,
+      'pills_to_take': null,
+      'expiry_date': expiryDate.toIso8601String().split('T').first,
+      'status': 'active',
+    });
 
     return treatmentId;
   }

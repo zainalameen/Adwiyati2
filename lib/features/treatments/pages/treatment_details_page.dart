@@ -33,10 +33,9 @@ class TreatmentDetailsPage extends ConsumerWidget {
             body: Center(
               child: Text(
                 'Treatment not found',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: AppColors.textSecondary),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
               ),
             ),
           );
@@ -67,10 +66,9 @@ class TreatmentDetailsPage extends ConsumerWidget {
             child: Text(
               'Error loading treatment.\n$e',
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
           ),
         ),
@@ -220,14 +218,14 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
       ref.invalidate(treatmentsListProvider(TreatmentStatus.active));
       ref.invalidate(treatmentsListProvider(TreatmentStatus.completed));
       ref.invalidate(treatmentRemindersProvider(widget.treatmentId));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Treatment updated')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Treatment updated')));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not save: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not save: $e')));
     }
   }
 
@@ -238,17 +236,15 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
         backgroundColor: AppColors.surface,
         title: Text(
           'End treatment?',
-          style: Theme.of(ctx)
-              .textTheme
-              .titleLarge
-              ?.copyWith(color: AppColors.textPrimary),
+          style: Theme.of(
+            ctx,
+          ).textTheme.titleLarge?.copyWith(color: AppColors.textPrimary),
         ),
         content: Text(
           'This will mark the treatment as completed.',
-          style: Theme.of(ctx)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.textSecondary),
+          style: Theme.of(
+            ctx,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
@@ -268,28 +264,31 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
     if (user == null) return;
 
     try {
-      await TreatmentService.instance
-          .completeTreatment(widget.treatmentId, user.id);
+      await TreatmentService.instance.completeTreatment(
+        widget.treatmentId,
+        user.id,
+      );
       if (!mounted) return;
       ref.invalidate(treatmentsListProvider(TreatmentStatus.active));
       ref.invalidate(treatmentsListProvider(TreatmentStatus.completed));
       ref.invalidate(treatmentDetailProvider(widget.treatmentId));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Treatment completed')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Treatment completed')));
       context.pop();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not complete: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not complete: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final remindersAsync =
-        ref.watch(treatmentRemindersProvider(widget.treatmentId));
+    final remindersAsync = ref.watch(
+      treatmentRemindersProvider(widget.treatmentId),
+    );
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -464,9 +463,7 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
                     child: TextField(
                       controller: _timesCtrl,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
@@ -478,9 +475,7 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
                     child: TextField(
                       controller: _intervalCtrl,
                       keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
@@ -519,21 +514,16 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
               ],
             ),
             const SizedBox(height: 24),
-            FilledButton(
-              onPressed: _save,
-              child: const Text('Save changes'),
-            ),
+            FilledButton(onPressed: _save, child: const Text('Save changes')),
           ],
           const SizedBox(height: 24),
-          _StatusPill(
-            status: widget.initial.treatment.status,
-          ),
+          _StatusPill(status: widget.initial.treatment.status),
           const SizedBox(height: 28),
           Text(
             'Dose Reminders',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
           remindersAsync.when(
@@ -541,17 +531,20 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
               if (list.isEmpty) {
                 return Text(
                   'No scheduled reminders yet.',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: AppColors.textSecondary),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 );
               }
               return Column(
-                children: list.map((r) => _ReminderRow(
-                      reminder: r,
-                      intervalDays: widget.initial.treatment.intervalDays,
-                    )).toList(),
+                children: list
+                    .map(
+                      (r) => _ReminderRow(
+                        reminder: r,
+                        intervalDays: widget.initial.treatment.intervalDays,
+                      ),
+                    )
+                    .toList(),
               );
             },
             loading: () => const Padding(
@@ -565,10 +558,9 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
             ),
             error: (e, _) => Text(
               'Could not load reminders: $e',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: AppColors.error),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.error),
             ),
           ),
           if (_isActive) ...[
@@ -577,7 +569,9 @@ class _TreatmentDetailsBodyState extends ConsumerState<_TreatmentDetailsBody> {
               onPressed: _confirmEndTreatment,
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.textSecondary,
-                side: BorderSide(color: AppColors.border.withValues(alpha: 0.8)),
+                side: BorderSide(
+                  color: AppColors.border.withValues(alpha: 0.8),
+                ),
               ),
               child: const Text('Mark as completed'),
             ),
@@ -605,9 +599,9 @@ class _LabeledField extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 8),
         Container(
@@ -638,14 +632,14 @@ class _DateTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Row(
         children: [
-          const Icon(Icons.calendar_today_rounded,
-              size: 18, color: AppColors.textSecondary),
+          const Icon(
+            Icons.calendar_today_rounded,
+            size: 18,
+            color: AppColors.textSecondary,
+          ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
+            child: Text(label, style: Theme.of(context).textTheme.bodyLarge),
           ),
         ],
       ),
@@ -681,18 +675,15 @@ class _StatusPill extends StatelessWidget {
           Container(
             width: 10,
             height: 10,
-            decoration: BoxDecoration(
-              color: fg,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: fg, shape: BoxShape.circle),
           ),
           const SizedBox(width: 10),
           Text(
             label,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: isActive ? AppColors.textPrimary : AppColors.textSecondary,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: isActive ? AppColors.textPrimary : AppColors.textSecondary,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),
@@ -704,10 +695,7 @@ class _ReminderRow extends StatelessWidget {
   final DoseReminderModel reminder;
   final int intervalDays;
 
-  const _ReminderRow({
-    required this.reminder,
-    required this.intervalDays,
-  });
+  const _ReminderRow({required this.reminder, required this.intervalDays});
 
   String get _daysLabel =>
       intervalDays <= 1 ? 'Daily' : 'Every $intervalDays days';
@@ -733,14 +721,17 @@ class _ReminderRow extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  const Icon(Icons.access_time_rounded,
-                      size: 18, color: AppColors.secondaryLight),
+                  const Icon(
+                    Icons.access_time_rounded,
+                    size: 18,
+                    color: AppColors.secondaryLight,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     _formatTime(reminder.plannedTime),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ],
               ),
@@ -749,9 +740,9 @@ class _ReminderRow extends StatelessWidget {
               child: Text(
                 _daysLabel,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ),
             Expanded(
@@ -759,9 +750,9 @@ class _ReminderRow extends StatelessWidget {
                 '${_trimQty(reminder.quantityToTake)} '
                 '${reminder.quantityToTake == 1 ? 'pill' : 'pills'}',
                 textAlign: TextAlign.end,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ),
           ],

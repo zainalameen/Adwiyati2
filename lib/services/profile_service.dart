@@ -49,7 +49,9 @@ class ProfileService {
 
   /// Updates an existing profile (FR4).
   Future<void> updateProfile(
-      String userId, Map<String, dynamic> updates) async {
+    String userId,
+    Map<String, dynamic> updates,
+  ) async {
     updates['updated_at'] = DateTime.now().toIso8601String();
     await SupabaseService.db
         .from(SupabaseService.userProfileTable)
@@ -65,9 +67,7 @@ class ProfileService {
         .select()
         .order('type')
         .order('name');
-    return (res as List)
-        .map((e) => AllergyConditionModel.fromJson(e))
-        .toList();
+    return (res as List).map((e) => AllergyConditionModel.fromJson(e)).toList();
   }
 
   /// Fetches the IDs of the user's selected allergies/conditions.
@@ -106,8 +106,9 @@ class ProfileService {
 
 // ── Riverpod providers ──────────────────────────────────────────────────────
 
-final profileServiceProvider =
-    Provider<ProfileService>((_) => ProfileService.instance);
+final profileServiceProvider = Provider<ProfileService>(
+  (_) => ProfileService.instance,
+);
 
 /// Fetches the current user's profile (null when missing).
 final userProfileProvider = FutureProvider<UserModel?>((ref) async {
@@ -117,14 +118,16 @@ final userProfileProvider = FutureProvider<UserModel?>((ref) async {
 });
 
 /// Fetches all allergies & conditions from the lookup table.
-final allergiesConditionsProvider =
-    FutureProvider<List<AllergyConditionModel>>((ref) async {
-  return ref.watch(profileServiceProvider).getAllergiesAndConditions();
-});
+final allergiesConditionsProvider = FutureProvider<List<AllergyConditionModel>>(
+  (ref) async {
+    return ref.watch(profileServiceProvider).getAllergiesAndConditions();
+  },
+);
 
 /// Fetches the current user's selected allergy/condition IDs.
-final userAllergyConditionIdsProvider =
-    FutureProvider<List<String>>((ref) async {
+final userAllergyConditionIdsProvider = FutureProvider<List<String>>((
+  ref,
+) async {
   final user = SupabaseService.auth.currentUser;
   if (user == null) return [];
   return ref.watch(profileServiceProvider).getUserAllergyConditionIds(user.id);

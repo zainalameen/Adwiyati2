@@ -31,33 +31,37 @@ class ProgressPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Your Progress',
-                  style: Theme.of(context).textTheme.displayLarge),
+              Text(
+                'Your Progress',
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
               const SizedBox(height: 4),
               Text(
                 'Track your medication adherence journey',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: AppColors.textSecondary),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 24),
 
               // ── Level + Streaks + Points ──
               profileAsync.when(
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
-                error: (_, __) => const SizedBox.shrink(),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (_, _) => const SizedBox.shrink(),
                 data: (profile) {
                   if (profile == null) return const SizedBox.shrink();
                   final lvl = GamificationConfig.getLevelForPoints(
-                      profile.totalPoints);
-                  final next =
-                      GamificationConfig.getNextLevel(profile.totalPoints);
+                    profile.totalPoints,
+                  );
+                  final next = GamificationConfig.getNextLevel(
+                    profile.totalPoints,
+                  );
                   final progress = GamificationConfig.getLevelProgress(
-                      profile.totalPoints);
+                    profile.totalPoints,
+                  );
                   final toGo = GamificationConfig.pointsToNextLevel(
-                      profile.totalPoints);
+                    profile.totalPoints,
+                  );
 
                   return Column(
                     children: [
@@ -104,10 +108,7 @@ class ProgressPage extends ConsumerWidget {
                         icon: Icons.star,
                         label: 'Total Points Earned',
                         value: '${profile.totalPoints}',
-                        gradient: const [
-                          Color(0xFF14B8A6),
-                          Color(0xFF22C55E),
-                        ],
+                        gradient: const [Color(0xFF14B8A6), Color(0xFF22C55E)],
                         isWide: true,
                       ),
                     ],
@@ -117,13 +118,14 @@ class ProgressPage extends ConsumerWidget {
               const SizedBox(height: 28),
 
               // ── Achievements ──
-              Text('Recent Achievements',
-                  style: Theme.of(context).textTheme.displaySmall),
+              Text(
+                'Recent Achievements',
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
               const SizedBox(height: 12),
               achievementsAsync.when(
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
-                error: (_, __) => const SizedBox.shrink(),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (_, _) => const SizedBox.shrink(),
                 data: (achievements) {
                   if (achievements.isEmpty) {
                     return Card(
@@ -132,15 +134,16 @@ class ProgressPage extends ConsumerWidget {
                         child: Center(
                           child: Column(
                             children: [
-                              const Icon(Icons.emoji_events_outlined,
-                                  size: 40, color: AppColors.textDisabled),
+                              const Icon(
+                                Icons.emoji_events_outlined,
+                                size: 40,
+                                color: AppColors.textDisabled,
+                              ),
                               const SizedBox(height: 8),
                               Text(
                                 'Take your first dose to earn achievements!',
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
+                                style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(color: AppColors.textSecondary),
                               ),
                             ],
@@ -154,9 +157,15 @@ class ProgressPage extends ConsumerWidget {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          for (int i = 0; i < achievements.length; i++) ...[
-                            if (i > 0) const Divider(height: 20),
-                            _AchievementTile(achievement: achievements[i]),
+                          for (
+                            int achievementIndex = 0;
+                            achievementIndex < achievements.length;
+                            achievementIndex++
+                          ) ...[
+                            if (achievementIndex > 0) const Divider(height: 20),
+                            _AchievementTile(
+                              achievement: achievements[achievementIndex],
+                            ),
                           ],
                         ],
                       ),
@@ -167,13 +176,14 @@ class ProgressPage extends ConsumerWidget {
               const SizedBox(height: 28),
 
               // ── Statistics ──
-              Text('Statistics',
-                  style: Theme.of(context).textTheme.displaySmall),
+              Text(
+                'Statistics',
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
               const SizedBox(height: 12),
               statsAsync.when(
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
-                error: (_, __) => const SizedBox.shrink(),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (_, _) => const SizedBox.shrink(),
                 data: (stats) => Row(
                   children: [
                     Expanded(
@@ -186,8 +196,7 @@ class ProgressPage extends ConsumerWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: _StatBox(
-                        value:
-                            '${(stats['adherenceRate'] as double).round()}%',
+                        value: '${(stats['adherenceRate'] as double).round()}%',
                         label: 'Adherence\nRate',
                         color: AppColors.primary,
                       ),
@@ -247,25 +256,30 @@ class _LevelCard extends StatelessWidget {
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const Icon(Icons.rocket_launch,
-                      color: AppColors.primary, size: 24),
+                  child: const Icon(
+                    Icons.rocket_launch,
+                    color: AppColors.primary,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Current Level',
-                          style: Theme.of(context).textTheme.bodySmall),
+                      Text(
+                        'Current Level',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                       Text(
                         'Level $level',
-                        style: Theme.of(context)
-                            .textTheme
-                            .displaySmall
+                        style: Theme.of(context).textTheme.displaySmall
                             ?.copyWith(color: AppColors.primary),
                       ),
-                      Text(levelName,
-                          style: Theme.of(context).textTheme.bodySmall),
+                      Text(
+                        levelName,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 ),
@@ -274,13 +288,13 @@ class _LevelCard extends StatelessWidget {
                   children: [
                     Text(
                       '$totalPoints',
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayMedium
+                      style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(color: AppColors.primary),
                     ),
-                    Text('Points',
-                        style: Theme.of(context).textTheme.bodySmall),
+                    Text(
+                      'Points',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ],
                 ),
               ],
@@ -292,8 +306,9 @@ class _LevelCard extends StatelessWidget {
                 value: progress,
                 minHeight: 8,
                 backgroundColor: AppColors.surfaceVariant,
-                valueColor:
-                    const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  AppColors.primary,
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -308,19 +323,18 @@ class _LevelCard extends StatelessWidget {
                   Text(
                     '$pointsToGo points to go',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               )
             else
               Text(
                 'Maximum level reached!',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: AppColors.success),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.success),
               ),
           ],
         ),
@@ -371,8 +385,10 @@ class _GradientStatCard extends StatelessWidget {
       children: [
         Icon(icon, color: Colors.white70, size: 24),
         const SizedBox(height: 12),
-        Text(label,
-            style: const TextStyle(fontSize: 12, color: Colors.white70)),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: Colors.white70),
+        ),
         const SizedBox(height: 4),
         Row(
           crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -388,8 +404,10 @@ class _GradientStatCard extends StatelessWidget {
             ),
             if (unit != null) ...[
               const SizedBox(width: 4),
-              Text(unit!,
-                  style: const TextStyle(fontSize: 13, color: Colors.white70)),
+              Text(
+                unit!,
+                style: const TextStyle(fontSize: 13, color: Colors.white70),
+              ),
             ],
           ],
         ),
@@ -403,8 +421,10 @@ class _GradientStatCard extends StatelessWidget {
         Icon(icon, color: Colors.white70, size: 28),
         const SizedBox(width: 16),
         Expanded(
-          child: Text(label,
-              style: const TextStyle(fontSize: 14, color: Colors.white70)),
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, color: Colors.white70),
+          ),
         ),
         Text(
           value,
@@ -461,28 +481,28 @@ class _AchievementTile extends StatelessWidget {
   }
 
   IconData get _icon => switch (achievement.type) {
-        AchievementType.firstDose => Icons.medication,
-        AchievementType.perfectWeek => Icons.star,
-        AchievementType.earlyBird => Icons.wb_sunny,
-        AchievementType.consistencyChampion => Icons.emoji_events,
-        AchievementType.weekWarrior => Icons.local_fire_department,
-        AchievementType.monthMaster => Icons.workspace_premium,
-        AchievementType.centurion => Icons.looks_one,
-        AchievementType.halfMillennium => Icons.star_outline,
-        AchievementType.pointsMaster => Icons.auto_awesome,
-      };
+    AchievementType.firstDose => Icons.medication,
+    AchievementType.perfectWeek => Icons.star,
+    AchievementType.earlyBird => Icons.wb_sunny,
+    AchievementType.consistencyChampion => Icons.emoji_events,
+    AchievementType.weekWarrior => Icons.local_fire_department,
+    AchievementType.monthMaster => Icons.workspace_premium,
+    AchievementType.centurion => Icons.looks_one,
+    AchievementType.halfMillennium => Icons.star_outline,
+    AchievementType.pointsMaster => Icons.auto_awesome,
+  };
 
   Color get _color => switch (achievement.type) {
-        AchievementType.firstDose => Colors.blue,
-        AchievementType.perfectWeek => Colors.amber,
-        AchievementType.earlyBird => Colors.orange,
-        AchievementType.consistencyChampion => Colors.purple,
-        AchievementType.weekWarrior => Colors.red,
-        AchievementType.monthMaster => Colors.teal,
-        AchievementType.centurion => Colors.green,
-        AchievementType.halfMillennium => Colors.amber,
-        AchievementType.pointsMaster => Colors.indigo,
-      };
+    AchievementType.firstDose => Colors.blue,
+    AchievementType.perfectWeek => Colors.amber,
+    AchievementType.earlyBird => Colors.orange,
+    AchievementType.consistencyChampion => Colors.purple,
+    AchievementType.weekWarrior => Colors.red,
+    AchievementType.monthMaster => Colors.teal,
+    AchievementType.centurion => Colors.green,
+    AchievementType.halfMillennium => Colors.amber,
+    AchievementType.pointsMaster => Colors.indigo,
+  };
 }
 
 // ── Stat Box ────────────────────────────────────────────────────────────────
@@ -522,9 +542,9 @@ class _StatBox extends StatelessWidget {
             label,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: color.withValues(alpha: 0.8),
-                  fontSize: 11,
-                ),
+              color: color.withValues(alpha: 0.8),
+              fontSize: 11,
+            ),
           ),
         ],
       ),

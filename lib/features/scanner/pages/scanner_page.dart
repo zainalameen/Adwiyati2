@@ -20,8 +20,11 @@ class ScannerPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Center(
-                child: Icon(Icons.qr_code_scanner,
-                    color: Colors.white54, size: 80),
+                child: Icon(
+                  Icons.qr_code_scanner,
+                  color: Colors.white54,
+                  size: 80,
+                ),
               ),
             ),
           ),

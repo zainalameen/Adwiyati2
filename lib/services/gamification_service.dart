@@ -16,8 +16,7 @@ class GamificationService {
         .eq('status', 'active');
 
     if ((treatments as List).isNotEmpty) {
-      final tIds =
-          treatments.map((t) => t['treatment_id'] as String).toList();
+      final tIds = treatments.map((t) => t['treatment_id'] as String).toList();
       final todayStr = _fmtDate(DateTime.now());
 
       final todayDoses = await SupabaseService.db
@@ -26,7 +25,8 @@ class GamificationService {
           .inFilter('treatment_id', tIds)
           .eq('planned_date', todayStr);
 
-      final allTaken = (todayDoses as List).isNotEmpty &&
+      final allTaken =
+          (todayDoses as List).isNotEmpty &&
           todayDoses.every((d) => d['status'] == 'taken');
 
       if (allTaken) {
@@ -59,8 +59,7 @@ class GamificationService {
 
     if (lastDate != null && todayDate.difference(lastDate).inDays == 0) {
       return;
-    } else if (lastDate != null &&
-        todayDate.difference(lastDate).inDays == 1) {
+    } else if (lastDate != null && todayDate.difference(lastDate).inDays == 1) {
       currentStreak += 1;
     } else {
       currentStreak = 1;
@@ -117,8 +116,11 @@ class GamificationService {
 
     final today = DateTime.now();
     final todayDate = DateTime(today.year, today.month, today.day);
-    final lastDate =
-        DateTime(lastAction.year, lastAction.month, lastAction.day);
+    final lastDate = DateTime(
+      lastAction.year,
+      lastAction.month,
+      lastAction.day,
+    );
 
     if (todayDate.difference(lastDate).inDays > 1) {
       await SupabaseService.db
@@ -153,8 +155,7 @@ class GamificationService {
         .select('achievement_type')
         .eq('user_id', userId);
 
-    final earned =
-        existing.map((e) => e['achievement_type'] as String).toSet();
+    final earned = existing.map((e) => e['achievement_type'] as String).toSet();
     final totalPoints = (profile['total_points'] as num?)?.toInt() ?? 0;
     final longestStreak = (profile['longest_streak'] as num?)?.toInt() ?? 0;
 
@@ -178,8 +179,9 @@ class GamificationService {
           .eq('user_id', userId);
 
       if ((treatments as List).isNotEmpty) {
-        final tIds =
-            treatments.map((t) => t['treatment_id'] as String).toList();
+        final tIds = treatments
+            .map((t) => t['treatment_id'] as String)
+            .toList();
         final taken = await SupabaseService.db
             .from(SupabaseService.doseReminderTable)
             .select('reminder_id')

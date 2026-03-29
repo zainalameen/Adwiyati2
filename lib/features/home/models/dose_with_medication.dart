@@ -50,8 +50,9 @@ class DoseWithMedication {
   }
 
   String get dosageDisplay {
-    final amt =
-        doseAmount % 1 == 0 ? doseAmount.toInt().toString() : '$doseAmount';
+    final amt = doseAmount % 1 == 0
+        ? doseAmount.toInt().toString()
+        : '$doseAmount';
     return unit != null ? '$amt$unit' : amt;
   }
 

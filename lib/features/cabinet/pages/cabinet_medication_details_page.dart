@@ -35,10 +35,9 @@ class CabinetMedicationDetailsPage extends ConsumerWidget {
             body: Center(
               child: Text(
                 'Medication not found',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: AppColors.textSecondary),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
               ),
             ),
           );
@@ -69,10 +68,9 @@ class CabinetMedicationDetailsPage extends ConsumerWidget {
             child: Text(
               'Error loading medication.\n$e',
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
           ),
         ),
@@ -198,14 +196,14 @@ class _CabinetDetailsBodyState extends ConsumerState<_CabinetDetailsBody> {
       setState(() => _editing = false);
       ref.invalidate(cabinetDetailProvider(widget.cabinetMedId));
       ref.invalidate(cabinetListProvider);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Medication updated')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Medication updated')));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not save: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not save: $e')));
     }
   }
 
@@ -229,14 +227,14 @@ class _CabinetDetailsBodyState extends ConsumerState<_CabinetDetailsBody> {
       context.push(AppRoutes.treatmentDetails(id));
     } on CabinetException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not add: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not add: $e')));
     }
   }
 
@@ -247,17 +245,15 @@ class _CabinetDetailsBodyState extends ConsumerState<_CabinetDetailsBody> {
         backgroundColor: AppColors.surface,
         title: Text(
           'Delete medication?',
-          style: Theme.of(ctx)
-              .textTheme
-              .titleLarge
-              ?.copyWith(color: AppColors.textPrimary),
+          style: Theme.of(
+            ctx,
+          ).textTheme.titleLarge?.copyWith(color: AppColors.textPrimary),
         ),
         content: Text(
           'This removes it from your cabinet only.',
-          style: Theme.of(ctx)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: AppColors.textSecondary),
+          style: Theme.of(
+            ctx,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
@@ -281,19 +277,21 @@ class _CabinetDetailsBodyState extends ConsumerState<_CabinetDetailsBody> {
     if (user == null) return;
 
     try {
-      await CabinetService.instance
-          .deleteCabinetEntry(widget.cabinetMedId, user.id);
+      await CabinetService.instance.deleteCabinetEntry(
+        widget.cabinetMedId,
+        user.id,
+      );
       if (!mounted) return;
       ref.invalidate(cabinetListProvider);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Medication removed')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Medication removed')));
       context.pop();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not delete: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not delete: $e')));
     }
   }
 
@@ -441,8 +439,11 @@ class _CabinetDetailsBodyState extends ConsumerState<_CabinetDetailsBody> {
                           onTap: _pickExpiry,
                           child: Row(
                             children: [
-                              const Icon(Icons.calendar_today_rounded,
-                                  size: 18, color: AppColors.textSecondary),
+                              const Icon(
+                                Icons.calendar_today_rounded,
+                                size: 18,
+                                color: AppColors.textSecondary,
+                              ),
                               const SizedBox(width: 8),
                               Text(
                                 _fmtYmd(_expiryDate),
@@ -461,10 +462,7 @@ class _CabinetDetailsBodyState extends ConsumerState<_CabinetDetailsBody> {
           ),
           if (_editing) ...[
             const SizedBox(height: 24),
-            FilledButton(
-              onPressed: _save,
-              child: const Text('Save changes'),
-            ),
+            FilledButton(onPressed: _save, child: const Text('Save changes')),
           ],
           const SizedBox(height: 28),
           _GradientActionButton(
@@ -494,9 +492,9 @@ class _LabeledField extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 8),
         Container(
@@ -553,9 +551,9 @@ class _GradientActionButton extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),
@@ -587,15 +585,18 @@ class _DeleteButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.delete_outline_rounded,
-                  color: AppColors.error, size: 22),
+              const Icon(
+                Icons.delete_outline_rounded,
+                color: AppColors.error,
+                size: 22,
+              ),
               const SizedBox(width: 10),
               Text(
                 'Delete Medication',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  color: AppColors.error,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),

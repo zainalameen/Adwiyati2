@@ -26,8 +26,10 @@ class TreatmentService {
         .map((e) => ActiveTreatmentModel.fromJson(e as Map<String, dynamic>))
         .toList();
 
-    final medicationIds =
-        treatments.map((t) => t.medicationId).toSet().toList();
+    final medicationIds = treatments
+        .map((t) => t.medicationId)
+        .toSet()
+        .toList();
 
     final medRows = await SupabaseService.db
         .from(SupabaseService.medicationTable)
@@ -36,15 +38,18 @@ class TreatmentService {
 
     final medMap = {
       for (final m in medRows as List)
-        m['medication_id'] as String:
-            MedicationModel.fromJson(m as Map<String, dynamic>),
+        m['medication_id'] as String: MedicationModel.fromJson(
+          m as Map<String, dynamic>,
+        ),
     };
 
     return treatments
-        .map((t) => TreatmentWithMedication(
-              treatment: t,
-              medication: medMap[t.medicationId]!,
-            ))
+        .map(
+          (t) => TreatmentWithMedication(
+            treatment: t,
+            medication: medMap[t.medicationId]!,
+          ),
+        )
         .toList();
   }
 
@@ -61,8 +66,9 @@ class TreatmentService {
 
     if (row == null) return null;
 
-    final treatment =
-        ActiveTreatmentModel.fromJson(Map<String, dynamic>.from(row));
+    final treatment = ActiveTreatmentModel.fromJson(
+      Map<String, dynamic>.from(row),
+    );
 
     final medRow = await SupabaseService.db
         .from(SupabaseService.medicationTable)
@@ -127,12 +133,15 @@ class TreatmentService {
         .eq('treatment_id', treatmentId)
         .eq('user_id', userId);
 
-    await SupabaseService.db.from(SupabaseService.medicationTable).update({
-      'dosage_form': dosageForm,
-      'dose_amount': doseAmount,
-      'unit': unit,
-      'trade_name_en': tradeNameEn,
-    }).eq('medication_id', medicationId);
+    await SupabaseService.db
+        .from(SupabaseService.medicationTable)
+        .update({
+          'dosage_form': dosageForm,
+          'dose_amount': doseAmount,
+          'unit': unit,
+          'trade_name_en': tradeNameEn,
+        })
+        .eq('medication_id', medicationId);
   }
 
   Future<void> completeTreatment(String treatmentId, String userId) async {

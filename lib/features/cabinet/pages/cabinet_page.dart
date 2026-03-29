@@ -141,9 +141,7 @@ class _CabinetPageState extends ConsumerState<CabinetPage> {
                             Center(
                               child: Text(
                                 'No medications match your search.',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
+                                style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(color: AppColors.textSecondary),
                               ),
                             ),
@@ -161,11 +159,11 @@ class _CabinetPageState extends ConsumerState<CabinetPage> {
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          childAspectRatio: 0.74,
-                        ),
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 12,
+                              childAspectRatio: 0.74,
+                            ),
                         itemCount: items.length,
                         itemBuilder: (context, index) {
                           final entry = items[index];
@@ -190,10 +188,9 @@ class _CabinetPageState extends ConsumerState<CabinetPage> {
                       child: Text(
                         'Could not load cabinet.\n$e',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: AppColors.textSecondary),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ),
                   ),
@@ -214,11 +211,11 @@ enum CabinetFormFilter {
   other;
 
   String get label => switch (this) {
-        CabinetFormFilter.all => 'All',
-        CabinetFormFilter.pills => 'Pills',
-        CabinetFormFilter.syrups => 'Syrups',
-        CabinetFormFilter.other => 'Other',
-      };
+    CabinetFormFilter.all => 'All',
+    CabinetFormFilter.pills => 'Pills',
+    CabinetFormFilter.syrups => 'Syrups',
+    CabinetFormFilter.other => 'Other',
+  };
 
   bool matches(String dosageForm) {
     final f = dosageForm.toLowerCase();
@@ -342,9 +339,9 @@ class _FilterChip extends StatelessWidget {
           child: Text(
             label,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: selected ? Colors.white : AppColors.textSecondary,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: selected ? Colors.white : AppColors.textSecondary,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ),
@@ -356,10 +353,7 @@ class _CabinetMedCard extends StatelessWidget {
   final CabinetEntry entry;
   final VoidCallback onTap;
 
-  const _CabinetMedCard({
-    required this.entry,
-    required this.onTap,
-  });
+  const _CabinetMedCard({required this.entry, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -442,22 +436,22 @@ class _CabinetMedCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   entry.doseLine,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 Text(
                   entry.quantityLine,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textDisabled,
-                      ),
+                    color: AppColors.textDisabled,
+                  ),
                 ),
                 const Spacer(),
                 _ExpiryBadge(
@@ -495,17 +489,15 @@ class _ExpiryBadge extends StatelessWidget {
             ? AppColors.warning.withValues(alpha: 0.22)
             : AppColors.surfaceVariant.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: AppColors.border.withValues(alpha: 0.35),
-        ),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.35)),
       ),
       child: Text(
         _label,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: urgent ? AppColors.warning : AppColors.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
+          color: urgent ? AppColors.warning : AppColors.textSecondary,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -533,16 +525,15 @@ class _EmptyCabinet extends StatelessWidget {
               Text(
                 'Your cabinet is empty',
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                  color: AppColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Add medications using the + button above',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: AppColors.textSecondary),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ],
           ),

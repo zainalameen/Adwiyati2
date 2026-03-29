@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('placeholder', () {
+  test('smoke test — basic arithmetic sanity check', () {
     expect(1 + 1, 2);
   });
 }

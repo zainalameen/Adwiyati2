@@ -52,19 +52,17 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 8),
-                  Text(l.get('getStarted'),
-                          style: Theme.of(context).textTheme.displayLarge)
-                      .animate()
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.15),
+                  Text(
+                    l.get('getStarted'),
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.15),
                   const SizedBox(height: 6),
-                  Text(l.get('createYourAccount'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: AppColors.textSecondary))
-                      .animate()
-                      .fadeIn(duration: 400.ms, delay: 80.ms),
+                  Text(
+                    l.get('createYourAccount'),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ).animate().fadeIn(duration: 400.ms, delay: 80.ms),
                   const SizedBox(height: 28),
 
                   if (_errorMessage != null) ...[
@@ -73,82 +71,103 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   ],
 
                   GlassCard(
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _emailCtrl,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            labelText: l.get('email'),
-                            hintText: l.get('emailHint'),
-                            prefixIcon: const Icon(Icons.email_outlined),
-                          ),
-                          validator: (v) => (v == null || !v.contains('@'))
-                              ? l.get('invalidEmail')
-                              : null,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordCtrl,
-                          obscureText: _obscurePassword,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            labelText: l.get('password'),
-                            hintText: l.get('passwordHint'),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            suffixIcon: IconButton(
-                              icon: Icon(_obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined),
-                              onPressed: () => setState(
-                                  () => _obscurePassword = !_obscurePassword),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _emailCtrl,
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: l.get('email'),
+                                hintText: l.get('emailHint'),
+                                prefixIcon: const Icon(Icons.email_outlined),
+                              ),
+                              validator: (v) => (v == null || !v.contains('@'))
+                                  ? l.get('invalidEmail')
+                                  : null,
                             ),
-                          ),
-                          validator: (v) => (v == null || v.length < 8)
-                              ? l.get('passwordTooShort')
-                              : null,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _confirmCtrl,
-                          obscureText: _obscureConfirm,
-                          textInputAction: TextInputAction.done,
-                          decoration: InputDecoration(
-                            labelText: l.get('confirmPassword'),
-                            hintText: l.get('confirmPasswordHint'),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            suffixIcon: IconButton(
-                              icon: Icon(_obscureConfirm
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined),
-                              onPressed: () => setState(
-                                  () => _obscureConfirm = !_obscureConfirm),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _passwordCtrl,
+                              obscureText: _obscurePassword,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: l.get('password'),
+                                hintText: l.get('passwordHint'),
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                  ),
+                                  onPressed: () => setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  ),
+                                ),
+                              ),
+                              validator: (v) => (v == null || v.length < 8)
+                                  ? l.get('passwordTooShort')
+                                  : null,
                             ),
-                          ),
-                          validator: (v) => v != _passwordCtrl.text
-                              ? l.get('passwordsDontMatch')
-                              : null,
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _confirmCtrl,
+                              obscureText: _obscureConfirm,
+                              textInputAction: TextInputAction.done,
+                              decoration: InputDecoration(
+                                labelText: l.get('confirmPassword'),
+                                hintText: l.get('confirmPasswordHint'),
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureConfirm
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                  ),
+                                  onPressed: () => setState(
+                                    () => _obscureConfirm = !_obscureConfirm,
+                                  ),
+                                ),
+                              ),
+                              validator: (v) => v != _passwordCtrl.text
+                                  ? l.get('passwordsDontMatch')
+                                  : null,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 150.ms)
+                      .slideY(begin: 0.1),
                   const SizedBox(height: 16),
 
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.info.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.info.withValues(alpha: 0.2)),
+                      border: Border.all(
+                        color: AppColors.info.withValues(alpha: 0.2),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.info_outline, size: 18, color: AppColors.info),
+                        const Icon(
+                          Icons.info_outline,
+                          size: 18,
+                          color: AppColors.info,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(l.get('verificationHint'),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.info)),
+                          child: Text(
+                            l.get('verificationHint'),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.info),
+                          ),
                         ),
                       ],
                     ),
@@ -165,8 +184,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(l.get('alreadyHaveAccount'),
-                          style: TextStyle(color: AppColors.textSecondary)),
+                      Text(
+                        l.get('alreadyHaveAccount'),
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
                       TextButton(
                         onPressed: () =>
                             context.pushReplacement(AppRoutes.login),
@@ -190,10 +211,9 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       _errorMessage = null;
     });
     try {
-      await ref.read(authServiceProvider).signUp(
-            email: _emailCtrl.text.trim(),
-            password: _passwordCtrl.text,
-          );
+      await ref
+          .read(authServiceProvider)
+          .signUp(email: _emailCtrl.text.trim(), password: _passwordCtrl.text);
       if (!mounted) return;
       context.pushReplacement(AppRoutes.verify, extra: _emailCtrl.text.trim());
     } on AuthServiceException catch (e) {

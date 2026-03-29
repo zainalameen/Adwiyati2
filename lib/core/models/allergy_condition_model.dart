@@ -4,7 +4,9 @@ extension AllergyConditionTypeX on AllergyConditionType {
   String get value => name == 'allergy' ? 'Allergy' : 'Condition';
 
   static AllergyConditionType fromString(String s) {
-    return s == 'Allergy' ? AllergyConditionType.allergy : AllergyConditionType.condition;
+    return s == 'Allergy'
+        ? AllergyConditionType.allergy
+        : AllergyConditionType.condition;
   }
 }
 

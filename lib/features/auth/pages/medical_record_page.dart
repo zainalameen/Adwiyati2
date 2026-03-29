@@ -30,17 +30,14 @@ class _MedicalRecordPageState extends ConsumerState<MedicalRecordPage> {
   bool _isSaving = false;
   String? _errorMessage;
 
-  static const _bloodTypes = [
-    'A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-',
-  ];
+  static const _bloodTypes = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
   PersonalInfoData? get _personalInfo {
     final extra = GoRouterState.of(context).extra;
     return extra is PersonalInfoData ? extra : null;
   }
 
-  bool get _isFemale =>
-      _personalInfo?.gender.toLowerCase() == 'female';
+  bool get _isFemale => _personalInfo?.gender.toLowerCase() == 'female';
 
   @override
   void dispose() {
@@ -70,19 +67,17 @@ class _MedicalRecordPageState extends ConsumerState<MedicalRecordPage> {
                   const StepIndicator(currentStep: 2, totalSteps: 2),
                   const SizedBox(height: 24),
 
-                  Text(l.get('medicalRecord'),
-                          style: Theme.of(context).textTheme.displayLarge)
-                      .animate()
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.15),
+                  Text(
+                    l.get('medicalRecord'),
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.15),
                   const SizedBox(height: 6),
-                  Text(l.get('medicalSubtitle'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: AppColors.textSecondary))
-                      .animate()
-                      .fadeIn(duration: 400.ms, delay: 80.ms),
+                  Text(
+                    l.get('medicalSubtitle'),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ).animate().fadeIn(duration: 400.ms, delay: 80.ms),
                   const SizedBox(height: 28),
 
                   if (_errorMessage != null) ...[
@@ -92,28 +87,36 @@ class _MedicalRecordPageState extends ConsumerState<MedicalRecordPage> {
 
                   // Blood type
                   GlassCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.bloodtype_outlined,
-                                size: 18, color: AppColors.primary),
-                            const SizedBox(width: 8),
-                            Text(l.get('bloodType'),
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w600)),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.bloodtype_outlined,
+                                  size: 18,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  l.get('bloodType'),
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            _BloodTypeGrid(
+                              types: _bloodTypes,
+                              selected: _bloodType,
+                              onSelect: (v) => setState(() => _bloodType = v),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 14),
-                        _BloodTypeGrid(
-                          types: _bloodTypes,
-                          selected: _bloodType,
-                          onSelect: (v) => setState(() => _bloodType = v),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 150.ms)
+                      .slideY(begin: 0.1),
                   const SizedBox(height: 16),
 
                   // Allergies & Conditions
@@ -121,51 +124,61 @@ class _MedicalRecordPageState extends ConsumerState<MedicalRecordPage> {
                     loading: () => const Padding(
                       padding: EdgeInsets.all(32),
                       child: Center(
-                          child: CircularProgressIndicator(
-                              color: AppColors.primary)),
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      ),
                     ),
                     error: (e, _) => GlassCard(
-                      child: Text('Could not load: $e',
-                          style: const TextStyle(color: AppColors.error)),
+                      child: Text(
+                        'Could not load: $e',
+                        style: const TextStyle(color: AppColors.error),
+                      ),
                     ),
                     data: (items) {
                       final allergies = items
-                          .where((i) =>
-                              i.type == AllergyConditionType.allergy)
+                          .where((i) => i.type == AllergyConditionType.allergy)
                           .toList();
                       final conditions = items
-                          .where((i) =>
-                              i.type == AllergyConditionType.condition)
+                          .where(
+                            (i) => i.type == AllergyConditionType.condition,
+                          )
                           .toList();
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           _MultiSelectDropdown(
-                            label: l.get('allergies'),
-                            hint: l.get('selectFromList'),
-                            icon: Icons.warning_amber_outlined,
-                            items: allergies,
-                            selectedIds: _selectedAllergyIds,
-                            isArabic: isAr,
-                            onChanged: (ids) => setState(() {
-                              _selectedAllergyIds.clear();
-                              _selectedAllergyIds.addAll(ids);
-                            }),
-                          ).animate().fadeIn(duration: 500.ms, delay: 250.ms).slideY(begin: 0.1),
+                                label: l.get('allergies'),
+                                hint: l.get('selectFromList'),
+                                icon: Icons.warning_amber_outlined,
+                                items: allergies,
+                                selectedIds: _selectedAllergyIds,
+                                isArabic: isAr,
+                                onChanged: (ids) => setState(() {
+                                  _selectedAllergyIds.clear();
+                                  _selectedAllergyIds.addAll(ids);
+                                }),
+                              )
+                              .animate()
+                              .fadeIn(duration: 500.ms, delay: 250.ms)
+                              .slideY(begin: 0.1),
                           const SizedBox(height: 16),
                           _MultiSelectDropdown(
-                            label: l.get('conditions'),
-                            hint: l.get('selectFromList'),
-                            icon: Icons.favorite_outline,
-                            items: conditions,
-                            selectedIds: _selectedConditionIds,
-                            isArabic: isAr,
-                            onChanged: (ids) => setState(() {
-                              _selectedConditionIds.clear();
-                              _selectedConditionIds.addAll(ids);
-                            }),
-                          ).animate().fadeIn(duration: 500.ms, delay: 350.ms).slideY(begin: 0.1),
+                                label: l.get('conditions'),
+                                hint: l.get('selectFromList'),
+                                icon: Icons.favorite_outline,
+                                items: conditions,
+                                selectedIds: _selectedConditionIds,
+                                isArabic: isAr,
+                                onChanged: (ids) => setState(() {
+                                  _selectedConditionIds.clear();
+                                  _selectedConditionIds.addAll(ids);
+                                }),
+                              )
+                              .animate()
+                              .fadeIn(duration: 500.ms, delay: 350.ms)
+                              .slideY(begin: 0.1),
                         ],
                       );
                     },
@@ -174,71 +187,84 @@ class _MedicalRecordPageState extends ConsumerState<MedicalRecordPage> {
 
                   // Weight & Smoking
                   GlassCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                          controller: _weightCtrl,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          decoration: InputDecoration(
-                            labelText: l.get('weight'),
-                            prefixIcon:
-                                const Icon(Icons.monitor_weight_outlined),
-                            suffixText: 'kg',
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(l.get('smoker'),
-                            style: Theme.of(context).textTheme.labelLarge),
-                        const SizedBox(height: 10),
-                        Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: _ToggleChip(
-                                label: 'Yes',
-                                selected: _smoker,
-                                onTap: () => setState(() => _smoker = true),
+                            TextFormField(
+                              controller: _weightCtrl,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              decoration: InputDecoration(
+                                labelText: l.get('weight'),
+                                prefixIcon: const Icon(
+                                  Icons.monitor_weight_outlined,
+                                ),
+                                suffixText: 'kg',
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _ToggleChip(
-                                label: 'No',
-                                selected: !_smoker,
-                                onTap: () => setState(() => _smoker = false),
-                              ),
+                            const SizedBox(height: 20),
+                            Text(
+                              l.get('smoker'),
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),
-                          ],
-                        ),
-                        if (_isFemale) ...[
-                          const SizedBox(height: 20),
-                          Text(l.get('pregnant'),
-                              style: Theme.of(context).textTheme.labelLarge),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _ToggleChip(
-                                  label: 'Yes',
-                                  selected: _pregnant,
-                                  onTap: () => setState(() => _pregnant = true),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _ToggleChip(
+                                    label: 'Yes',
+                                    selected: _smoker,
+                                    onTap: () => setState(() => _smoker = true),
+                                  ),
                                 ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _ToggleChip(
+                                    label: 'No',
+                                    selected: !_smoker,
+                                    onTap: () =>
+                                        setState(() => _smoker = false),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (_isFemale) ...[
+                              const SizedBox(height: 20),
+                              Text(
+                                l.get('pregnant'),
+                                style: Theme.of(context).textTheme.labelLarge,
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: _ToggleChip(
-                                  label: 'No',
-                                  selected: !_pregnant,
-                                  onTap: () => setState(() => _pregnant = false),
-                                ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _ToggleChip(
+                                      label: 'Yes',
+                                      selected: _pregnant,
+                                      onTap: () =>
+                                          setState(() => _pregnant = true),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: _ToggleChip(
+                                      label: 'No',
+                                      selected: !_pregnant,
+                                      onTap: () =>
+                                          setState(() => _pregnant = false),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
-                          ),
-                        ],
-                      ],
-                    ),
-                  ).animate().fadeIn(duration: 500.ms, delay: 400.ms).slideY(begin: 0.1),
+                          ],
+                        ),
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 400.ms)
+                      .slideY(begin: 0.1),
                   const SizedBox(height: 32),
 
                   GradientButton(
@@ -260,8 +286,7 @@ class _MedicalRecordPageState extends ConsumerState<MedicalRecordPage> {
     if (!_formKey.currentState!.validate()) return;
     final info = _personalInfo;
     if (info == null) {
-      setState(
-          () => _errorMessage = 'Personal info missing. Please go back.');
+      setState(() => _errorMessage = 'Personal info missing. Please go back.');
       return;
     }
 
@@ -291,10 +316,7 @@ class _MedicalRecordPageState extends ConsumerState<MedicalRecordPage> {
         pregnant: _pregnant,
       );
 
-      final allSelectedIds = {
-        ..._selectedAllergyIds,
-        ..._selectedConditionIds,
-      };
+      final allSelectedIds = {..._selectedAllergyIds, ..._selectedConditionIds};
       if (allSelectedIds.isNotEmpty) {
         await profileService.setUserAllergiesAndConditions(
           userId,
@@ -346,8 +368,7 @@ class _BloodTypeGrid extends StatelessWidget {
                   ? null
                   : AppColors.surfaceVariant.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(12),
-              border:
-                  isSelected ? null : Border.all(color: AppColors.border),
+              border: isSelected ? null : Border.all(color: AppColors.border),
               boxShadow: isSelected
                   ? [
                       BoxShadow(
@@ -410,25 +431,31 @@ class _MultiSelectDropdown extends StatelessWidget {
             children: [
               Icon(icon, size: 18, color: AppColors.primary),
               const SizedBox(width: 8),
-              Text(label,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w600)),
+              Text(
+                label,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
               const Spacer(),
               if (selectedIds.isNotEmpty)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     gradient: AppColors.primaryGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text('${selectedIds.length}',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700)),
+                  child: Text(
+                    '${selectedIds.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
             ],
           ),
@@ -450,8 +477,7 @@ class _MultiSelectDropdown extends StatelessWidget {
             },
             child: Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: AppColors.surfaceVariant.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(14),
@@ -461,9 +487,7 @@ class _MultiSelectDropdown extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      selectedNames.isEmpty
-                          ? hint
-                          : selectedNames.join(', '),
+                      selectedNames.isEmpty ? hint : selectedNames.join(', '),
                       style: TextStyle(
                         fontSize: 14,
                         color: selectedNames.isEmpty
@@ -474,8 +498,10 @@ class _MultiSelectDropdown extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const Icon(Icons.keyboard_arrow_down,
-                      color: AppColors.textSecondary),
+                  const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: AppColors.textSecondary,
+                  ),
                 ],
               ),
             ),
@@ -485,37 +511,53 @@ class _MultiSelectDropdown extends StatelessWidget {
             Wrap(
               spacing: 6,
               runSpacing: 6,
-              children: selectedNames.take(5).map((name) {
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.3)),
-                  ),
-                  child: Text(name,
-                      style: const TextStyle(
-                          fontSize: 12, color: AppColors.primary)),
-                );
-              }).toList()
-                ..addAll(selectedNames.length > 5
-                    ? [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: AppColors.surfaceVariant.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text('+${selectedNames.length - 5} more',
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textSecondary)),
+              children:
+                  selectedNames.take(5).map((name) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
                         ),
-                      ]
-                    : []),
+                      ),
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    );
+                  }).toList()..addAll(
+                    selectedNames.length > 5
+                        ? [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceVariant.withValues(
+                                  alpha: 0.3,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '+${selectedNames.length - 5} more',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ]
+                        : [],
+                  ),
             ),
           ],
         ],
@@ -555,9 +597,11 @@ class _MultiSelectSheetState extends State<_MultiSelectSheet> {
     if (_searchQuery.isEmpty) return widget.items;
     final q = _searchQuery.toLowerCase();
     return widget.items
-        .where((i) =>
-            i.name.toLowerCase().contains(q) ||
-            (i.nameAr?.contains(_searchQuery) ?? false))
+        .where(
+          (i) =>
+              i.name.toLowerCase().contains(q) ||
+              (i.nameAr?.contains(_searchQuery) ?? false),
+        )
         .toList();
   }
 
@@ -575,11 +619,10 @@ class _MultiSelectSheetState extends State<_MultiSelectSheet> {
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.surface.withValues(alpha: 0.95),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(24)),
-              border: const Border(
-                top: BorderSide(color: AppColors.border),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
               ),
+              border: const Border(top: BorderSide(color: AppColors.border)),
             ),
             child: Column(
               children: [
@@ -597,24 +640,30 @@ class _MultiSelectSheetState extends State<_MultiSelectSheet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(widget.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w700)),
+                      Text(
+                        widget.title,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       TextButton(
                         onPressed: () => Navigator.pop(context, _selected),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             gradient: AppColors.primaryGradient,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text('Done',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600)),
+                          child: const Text(
+                            'Done',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -629,9 +678,13 @@ class _MultiSelectSheetState extends State<_MultiSelectSheet> {
                       prefixIcon: const Icon(Icons.search, size: 20),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       filled: true,
-                      fillColor: AppColors.surfaceVariant.withValues(alpha: 0.3),
+                      fillColor: AppColors.surfaceVariant.withValues(
+                        alpha: 0.3,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                         borderSide: BorderSide.none,
@@ -647,9 +700,10 @@ class _MultiSelectSheetState extends State<_MultiSelectSheet> {
                       child: Text(
                         '${_selected.length} selected',
                         style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600),
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -658,10 +712,11 @@ class _MultiSelectSheetState extends State<_MultiSelectSheet> {
                   child: ListView.builder(
                     controller: controller,
                     itemCount: _filteredItems.length,
-                    itemBuilder: (_, i) {
-                      final item = _filteredItems[i];
-                      final checked =
-                          _selected.contains(item.allergyConditionId);
+                    itemBuilder: (_, index) {
+                      final item = _filteredItems[index];
+                      final checked = _selected.contains(
+                        item.allergyConditionId,
+                      );
                       return CheckboxListTile(
                         value: checked,
                         title: Text(
@@ -672,14 +727,16 @@ class _MultiSelectSheetState extends State<_MultiSelectSheet> {
                             color: checked
                                 ? AppColors.textPrimary
                                 : AppColors.textSecondary,
-                            fontWeight:
-                                checked ? FontWeight.w600 : FontWeight.normal,
+                            fontWeight: checked
+                                ? FontWeight.w600
+                                : FontWeight.normal,
                           ),
                         ),
                         activeColor: AppColors.primary,
                         checkColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         onChanged: (v) {
                           setState(() {
                             if (v == true) {

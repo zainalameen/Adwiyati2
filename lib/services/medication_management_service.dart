@@ -44,7 +44,8 @@ class MedicationManagementService {
         .map(
           (row) => MedicationOption(
             id: row['medication_id'] as String,
-            tradeNameEn: row['trade_name_en'] as String? ?? 'Unknown medication',
+            tradeNameEn:
+                row['trade_name_en'] as String? ?? 'Unknown medication',
             dosageForm: row['dosage_form'] as String? ?? 'Pill',
             doseAmount: (row['dose_amount'] as num?)?.toDouble() ?? 0,
             unit: row['unit'] as String?,
@@ -53,7 +54,8 @@ class MedicationManagementService {
         .toList();
 
     meds.sort(
-      (a, b) => a.tradeNameEn.toLowerCase().compareTo(b.tradeNameEn.toLowerCase()),
+      (a, b) =>
+          a.tradeNameEn.toLowerCase().compareTo(b.tradeNameEn.toLowerCase()),
     );
     return meds;
   }

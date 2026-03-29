@@ -20,10 +20,13 @@ class HomeService {
 
     if ((treatments as List).isEmpty) return [];
 
-    final treatmentIds =
-        treatments.map((t) => t['treatment_id'] as String).toList();
-    final medicationIds =
-        treatments.map((t) => t['medication_id'] as String).toSet().toList();
+    final treatmentIds = treatments
+        .map((t) => t['treatment_id'] as String)
+        .toList();
+    final medicationIds = treatments
+        .map((t) => t['medication_id'] as String)
+        .toSet()
+        .toList();
 
     final results = await Future.wait([
       SupabaseService.db
@@ -43,9 +46,7 @@ class HomeService {
     final doses = results[0] as List;
     final medications = results[1] as List;
 
-    final medMap = {
-      for (var m in medications) m['medication_id'] as String: m,
-    };
+    final medMap = {for (var m in medications) m['medication_id'] as String: m};
     final treatmentMedMap = {
       for (var t in treatments)
         t['treatment_id'] as String: medMap[t['medication_id'] as String],
@@ -95,16 +96,12 @@ class HomeService {
         .eq('user_id', userId);
 
     if ((treatments as List).isEmpty) {
-      return {
-        'taken': 0,
-        'total': 0,
-        'perfectDays': 0,
-        'adherenceRate': 0.0,
-      };
+      return {'taken': 0, 'total': 0, 'perfectDays': 0, 'adherenceRate': 0.0};
     }
 
-    final treatmentIds =
-        treatments.map((t) => t['treatment_id'] as String).toList();
+    final treatmentIds = treatments
+        .map((t) => t['treatment_id'] as String)
+        .toList();
 
     final allDoses = await SupabaseService.db
         .from(SupabaseService.doseReminderTable)
@@ -127,8 +124,7 @@ class HomeService {
       'taken': takenDoses,
       'total': totalDoses,
       'perfectDays': perfectDays,
-      'adherenceRate':
-          totalDoses > 0 ? (takenDoses / totalDoses * 100) : 0.0,
+      'adherenceRate': totalDoses > 0 ? (takenDoses / totalDoses * 100) : 0.0,
     };
   }
 

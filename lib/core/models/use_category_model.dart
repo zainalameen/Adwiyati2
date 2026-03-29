@@ -2,10 +2,7 @@ class UseCategoryModel {
   final String useId;
   final String name;
 
-  const UseCategoryModel({
-    required this.useId,
-    required this.name,
-  });
+  const UseCategoryModel({required this.useId, required this.name});
 
   factory UseCategoryModel.fromJson(Map<String, dynamic> json) {
     return UseCategoryModel(
@@ -15,9 +12,6 @@ class UseCategoryModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'use_id': useId,
-      'name': name,
-    };
+    return {'use_id': useId, 'name': name};
   }
 }

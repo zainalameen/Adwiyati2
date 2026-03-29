@@ -13,8 +13,18 @@ class CalendarStrip extends StatelessWidget {
   });
 
   static const _months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   static const _dayAbbr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -34,9 +44,9 @@ class CalendarStrip extends StatelessWidget {
                 _isToday(selectedDate)
                     ? 'Today, ${selectedDate.day} ${_months[selectedDate.month - 1]}'
                     : '${_dayAbbr[selectedDate.weekday - 1]}, ${selectedDate.day} ${_months[selectedDate.month - 1]}',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: AppColors.textPrimary),
               ),
               const SizedBox(width: 4),
               const Icon(
@@ -64,7 +74,9 @@ class CalendarStrip extends StatelessWidget {
                   width: 60,
                   decoration: BoxDecoration(
                     gradient: isSelected ? AppColors.primaryGradient : null,
-                    color: isSelected ? null : AppColors.surface.withValues(alpha: 0.5),
+                    color: isSelected
+                        ? null
+                        : AppColors.surface.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
                       color: isSelected ? Colors.transparent : AppColors.border,
@@ -72,10 +84,12 @@ class CalendarStrip extends StatelessWidget {
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: AppColors.primaryLight.withValues(alpha: 0.4),
+                              color: AppColors.primaryLight.withValues(
+                                alpha: 0.4,
+                              ),
                               blurRadius: 16,
                               offset: const Offset(0, 8),
-                            )
+                            ),
                           ]
                         : [],
                   ),
@@ -98,7 +112,9 @@ class CalendarStrip extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
-                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                          color: isSelected
+                              ? Colors.white
+                              : AppColors.textPrimary,
                         ),
                       ),
                     ],

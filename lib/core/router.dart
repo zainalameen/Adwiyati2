@@ -71,10 +71,7 @@ abstract final class AppRoutes {
   };
 
   /// Routes that are part of the onboarding profile-creation flow.
-  static const onboardingRoutes = {
-    personalInfo,
-    medicalRecord,
-  };
+  static const onboardingRoutes = {personalInfo, medicalRecord};
 }
 
 /// Creates the router. Accepts a [Ref] so it can check auth state.

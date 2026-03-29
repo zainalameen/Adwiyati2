@@ -6,10 +6,7 @@ class CabinetEntry {
   final CabinetMedModel cabinet;
   final MedicationModel medication;
 
-  const CabinetEntry({
-    required this.cabinet,
-    required this.medication,
-  });
+  const CabinetEntry({required this.cabinet, required this.medication});
 
   String get displayName => medication.tradeNameEn;
 
@@ -30,15 +27,12 @@ class CabinetEntry {
 
   /// Show alert badge (low stock or expiry risk).
   bool get showAlertBadge =>
-      cabinet.isExpired ||
-      cabinet.isExpiringSoon ||
-      _isLowStock;
+      cabinet.isExpired || cabinet.isExpiringSoon || _isLowStock;
 
   bool get _isLowStock {
     final orig = medication.originalQuantity;
     if (orig <= 0) return cabinet.quantity <= 5;
-    return cabinet.quantity <= 5 ||
-        cabinet.quantity <= orig * 0.15;
+    return cabinet.quantity <= 5 || cabinet.quantity <= orig * 0.15;
   }
 
   ExpiryUrgency get expiryUrgency {

@@ -13,8 +13,7 @@ class ForgotPasswordPage extends ConsumerStatefulWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  ConsumerState<ForgotPasswordPage> createState() =>
-      _ForgotPasswordPageState();
+  ConsumerState<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
 class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
@@ -51,60 +50,70 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const SizedBox(height: 16),
-                        Text(l.get('forgotPassword'),
-                                style: Theme.of(context).textTheme.displayLarge)
+                        Text(
+                              l.get('forgotPassword'),
+                              style: Theme.of(context).textTheme.displayLarge,
+                            )
                             .animate()
                             .fadeIn(duration: 400.ms)
                             .slideY(begin: 0.15),
                         const SizedBox(height: 8),
-                        Text(l.get('resetInstructions'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(color: AppColors.textSecondary))
-                            .animate()
-                            .fadeIn(duration: 400.ms, delay: 80.ms),
+                        Text(
+                          l.get('resetInstructions'),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: AppColors.textSecondary),
+                        ).animate().fadeIn(duration: 400.ms, delay: 80.ms),
                         const SizedBox(height: 32),
                         if (_errorMessage != null) ...[
                           AuthErrorBanner(message: _errorMessage!),
                           const SizedBox(height: 16),
                         ],
                         GlassCard(
-                          child: TextFormField(
-                            controller: _emailCtrl,
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.done,
-                            onFieldSubmitted: (_) => _submit(),
-                            decoration: InputDecoration(
-                              labelText: l.get('email'),
-                              prefixIcon: const Icon(Icons.email_outlined),
-                            ),
-                            validator: (v) => (v == null || !v.contains('@'))
-                                ? l.get('invalidEmail')
-                                : null,
-                          ),
-                        ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
+                              child: TextFormField(
+                                controller: _emailCtrl,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.done,
+                                onFieldSubmitted: (_) => _submit(),
+                                decoration: InputDecoration(
+                                  labelText: l.get('email'),
+                                  prefixIcon: const Icon(Icons.email_outlined),
+                                ),
+                                validator: (v) =>
+                                    (v == null || !v.contains('@'))
+                                    ? l.get('invalidEmail')
+                                    : null,
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(duration: 500.ms, delay: 150.ms)
+                            .slideY(begin: 0.1),
                         const SizedBox(height: 16),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.info.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                                color: AppColors.info.withValues(alpha: 0.2)),
+                              color: AppColors.info.withValues(alpha: 0.2),
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.info_outline,
-                                  size: 18, color: AppColors.info),
+                              const Icon(
+                                Icons.info_outline,
+                                size: 18,
+                                color: AppColors.info,
+                              ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: Text(l.get('verificationHint'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(color: AppColors.info)),
+                                child: Text(
+                                  l.get('verificationHint'),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(color: AppColors.info),
+                                ),
                               ),
                             ],
                           ),
@@ -129,25 +138,30 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: 96,
-          height: 96,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.success, Color(0xFF059669)],
-            ),
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.success.withValues(alpha: 0.3),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.success, Color(0xFF059669)],
+                ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.success.withValues(alpha: 0.3),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: const Icon(Icons.check_circle_outline,
-              size: 44, color: Colors.white),
-        ).animate().fadeIn(duration: 500.ms).scale(
-            begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack),
+              child: const Icon(
+                Icons.check_circle_outline,
+                size: 44,
+                color: Colors.white,
+              ),
+            )
+            .animate()
+            .fadeIn(duration: 500.ms)
+            .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack),
         const SizedBox(height: 24),
         Text(
           l.get('verifyEmail'),
@@ -157,9 +171,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         const SizedBox(height: 12),
         Text(
           l.get('verifyMessage'),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
           textAlign: TextAlign.center,
         ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
         const SizedBox(height: 32),
@@ -185,7 +199,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
       }
       await ref
           .read(authServiceProvider)
-          .sendPasswordResetEmail(_emailCtrl.text.trim(), redirectTo: redirectTo);
+          .sendPasswordResetEmail(
+            _emailCtrl.text.trim(),
+            redirectTo: redirectTo,
+          );
       if (mounted) setState(() => _emailSent = true);
     } on AuthServiceException catch (e) {
       setState(() => _errorMessage = e.message);

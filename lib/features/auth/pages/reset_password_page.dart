@@ -49,62 +49,65 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 16),
-                  Text(l.get('resetPassword'),
-                          style: Theme.of(context).textTheme.displayLarge)
-                      .animate()
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.15),
+                  Text(
+                    l.get('resetPassword'),
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.15),
                   const SizedBox(height: 6),
-                  Text(l.get('enterNewPassword'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: AppColors.textSecondary))
-                      .animate()
-                      .fadeIn(duration: 400.ms, delay: 80.ms),
+                  Text(
+                    l.get('enterNewPassword'),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ).animate().fadeIn(duration: 400.ms, delay: 80.ms),
                   const SizedBox(height: 32),
                   if (_errorMessage != null) ...[
                     AuthErrorBanner(message: _errorMessage!),
                     const SizedBox(height: 16),
                   ],
                   GlassCard(
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _newPasswordCtrl,
-                          obscureText: _obscure,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            labelText: l.get('newPassword'),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            suffixIcon: IconButton(
-                              icon: Icon(_obscure
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined),
-                              onPressed: () =>
-                                  setState(() => _obscure = !_obscure),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _newPasswordCtrl,
+                              obscureText: _obscure,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: l.get('newPassword'),
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscure
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                  ),
+                                  onPressed: () =>
+                                      setState(() => _obscure = !_obscure),
+                                ),
+                              ),
+                              validator: (v) => (v == null || v.length < 8)
+                                  ? l.get('passwordTooShort')
+                                  : null,
                             ),
-                          ),
-                          validator: (v) => (v == null || v.length < 8)
-                              ? l.get('passwordTooShort')
-                              : null,
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _confirmCtrl,
+                              obscureText: true,
+                              textInputAction: TextInputAction.done,
+                              decoration: InputDecoration(
+                                labelText: l.get('confirmNewPassword'),
+                                prefixIcon: const Icon(Icons.lock_outline),
+                              ),
+                              validator: (v) => v != _newPasswordCtrl.text
+                                  ? l.get('passwordsDontMatch')
+                                  : null,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _confirmCtrl,
-                          obscureText: true,
-                          textInputAction: TextInputAction.done,
-                          decoration: InputDecoration(
-                            labelText: l.get('confirmNewPassword'),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                          ),
-                          validator: (v) => v != _newPasswordCtrl.text
-                              ? l.get('passwordsDontMatch')
-                              : null,
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 150.ms)
+                      .slideY(begin: 0.1),
                   const SizedBox(height: 32),
                   GradientButton(
                     label: l.get('resetPassword'),
@@ -127,9 +130,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
       _errorMessage = null;
     });
     try {
-      await ref
-          .read(authServiceProvider)
-          .updatePassword(_newPasswordCtrl.text);
+      await ref.read(authServiceProvider).updatePassword(_newPasswordCtrl.text);
       if (!mounted) return;
       clearPasswordRecoveryFlag();
       ScaffoldMessenger.of(context).showSnackBar(

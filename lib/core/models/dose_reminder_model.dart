@@ -51,10 +51,7 @@ class DoseReminderModel {
     };
   }
 
-  DoseReminderModel copyWith({
-    String? actualTime,
-    DoseReminderStatus? status,
-  }) {
+  DoseReminderModel copyWith({String? actualTime, DoseReminderStatus? status}) {
     return DoseReminderModel(
       reminderId: reminderId,
       treatmentId: treatmentId,

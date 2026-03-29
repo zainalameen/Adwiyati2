@@ -41,7 +41,7 @@ abstract final class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
-  
+
   static const LinearGradient progressGradient = LinearGradient(
     colors: [Color(0xFF00C9A7), Color(0xFF3B82F6)],
     begin: Alignment.topLeft,

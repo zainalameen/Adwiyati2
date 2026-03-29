@@ -13,10 +13,7 @@ Future<void> main() async {
 
   await Env.load();
 
-  await Supabase.initialize(
-    url: Env.supabaseUrl,
-    anonKey: Env.supabaseAnonKey,
-  );
+  await Supabase.initialize(url: Env.supabaseUrl, anonKey: Env.supabaseAnonKey);
 
   runApp(const ProviderScope(child: AdwiyatiApp()));
 }

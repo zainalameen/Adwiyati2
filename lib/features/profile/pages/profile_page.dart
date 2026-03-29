@@ -40,8 +40,7 @@ class _ProfileBody extends ConsumerWidget {
 
   const _ProfileBody({required this.profile, required this.l});
 
-  bool get _isFemale =>
-      profile?.gender.toLowerCase() == 'female';
+  bool get _isFemale => profile?.gender.toLowerCase() == 'female';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,11 +48,11 @@ class _ProfileBody extends ConsumerWidget {
     final initials = profile != null
         ? '${profile!.firstName[0]}${profile!.lastName[0]}'.toUpperCase()
         : '?';
-        
+
     final isAr = l.isArabic;
     final allergiesAsync = ref.watch(allergiesConditionsProvider);
     final userAllergyIdsAsync = ref.watch(userAllergyConditionIdsProvider);
-    
+
     String allergiesText = l.get('notSet');
     String conditionsText = l.get('notSet');
 
@@ -63,11 +62,19 @@ class _ProfileBody extends ConsumerWidget {
     } else if (allergiesAsync.hasValue && userAllergyIdsAsync.hasValue) {
       final allItems = allergiesAsync.value!;
       final userIds = userAllergyIdsAsync.value!;
-      
-      final userItems = allItems.where((i) => userIds.contains(i.allergyConditionId)).toList();
-      
-      final allergies = userItems.where((i) => i.type == AllergyConditionType.allergy).map((i) => isAr ? (i.nameAr ?? i.name) : i.name).toList();
-      final conditions = userItems.where((i) => i.type == AllergyConditionType.condition).map((i) => isAr ? (i.nameAr ?? i.name) : i.name).toList();
+
+      final userItems = allItems
+          .where((i) => userIds.contains(i.allergyConditionId))
+          .toList();
+
+      final allergies = userItems
+          .where((i) => i.type == AllergyConditionType.allergy)
+          .map((i) => isAr ? (i.nameAr ?? i.name) : i.name)
+          .toList();
+      final conditions = userItems
+          .where((i) => i.type == AllergyConditionType.condition)
+          .map((i) => isAr ? (i.nameAr ?? i.name) : i.name)
+          .toList();
 
       if (allergies.isNotEmpty) allergiesText = allergies.join(', ');
       if (conditions.isNotEmpty) conditionsText = conditions.join(', ');
@@ -105,33 +112,37 @@ class _ProfileBody extends ConsumerWidget {
               Center(
                 child: Text(
                   '${l.get('gender')}: ${profile!.gender}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: AppColors.textSecondary),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
             ],
             const SizedBox(height: 32),
 
             _SectionHeader(title: l.get('personalDetails')),
-            _InfoCard(children: [
-              _InfoRow(
+            _InfoCard(
+              children: [
+                _InfoRow(
                   label: l.get('firstName'),
-                  value: profile?.firstName ?? l.get('notSet')),
-              _InfoRow(
+                  value: profile?.firstName ?? l.get('notSet'),
+                ),
+                _InfoRow(
                   label: l.get('lastName'),
-                  value: profile?.lastName ?? l.get('notSet')),
-              _InfoRow(
-                label: l.get('dateOfBirth'),
-                value: profile != null
-                    ? '${profile!.dob.day}/${profile!.dob.month}/${profile!.dob.year}'
-                    : l.get('notSet'),
-              ),
-              _InfoRow(
+                  value: profile?.lastName ?? l.get('notSet'),
+                ),
+                _InfoRow(
+                  label: l.get('dateOfBirth'),
+                  value: profile != null
+                      ? '${profile!.dob.day}/${profile!.dob.month}/${profile!.dob.year}'
+                      : l.get('notSet'),
+                ),
+                _InfoRow(
                   label: l.get('gender'),
-                  value: profile?.gender ?? l.get('notSet')),
-            ]),
+                  value: profile?.gender ?? l.get('notSet'),
+                ),
+              ],
+            ),
             const SizedBox(height: 8),
             _ProfileTile(
               icon: Icons.edit_outlined,
@@ -141,36 +152,33 @@ class _ProfileBody extends ConsumerWidget {
 
             const SizedBox(height: 20),
             _SectionHeader(title: l.get('medicalDetails')),
-            _InfoCard(children: [
-              _InfoRow(
-                label: l.get('bloodTypeLabel'),
-                value: profile?.bloodType ?? l.get('notSet'),
-              ),
-              _InfoRow(
-                label: l.get('weightLabel'),
-                value: profile?.weightKg != null
-                    ? '${profile!.weightKg} kg'
-                    : l.get('notSet'),
-              ),
-              _InfoRow(
-                label: l.get('smokerLabel'),
-                value: profile?.smoker == true ? l.get('yes') : l.get('no'),
-              ),
-              if (_isFemale)
+            _InfoCard(
+              children: [
                 _InfoRow(
-                  label: l.get('pregnantLabel'),
-                  value:
-                      profile?.pregnant == true ? l.get('yes') : l.get('no'),
+                  label: l.get('bloodTypeLabel'),
+                  value: profile?.bloodType ?? l.get('notSet'),
                 ),
-              _InfoRow(
-                label: l.get('allergies'),
-                value: allergiesText,
-              ),
-              _InfoRow(
-                label: l.get('conditions'),
-                value: conditionsText,
-              ),
-            ]),
+                _InfoRow(
+                  label: l.get('weightLabel'),
+                  value: profile?.weightKg != null
+                      ? '${profile!.weightKg} kg'
+                      : l.get('notSet'),
+                ),
+                _InfoRow(
+                  label: l.get('smokerLabel'),
+                  value: profile?.smoker == true ? l.get('yes') : l.get('no'),
+                ),
+                if (_isFemale)
+                  _InfoRow(
+                    label: l.get('pregnantLabel'),
+                    value: profile?.pregnant == true
+                        ? l.get('yes')
+                        : l.get('no'),
+                  ),
+                _InfoRow(label: l.get('allergies'), value: allergiesText),
+                _InfoRow(label: l.get('conditions'), value: conditionsText),
+              ],
+            ),
             const SizedBox(height: 8),
             _ProfileTile(
               icon: Icons.edit_outlined,
@@ -345,8 +353,10 @@ class _EditPersonalInfoSheetState extends State<_EditPersonalInfoSheet> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(l.get('editPersonalInfo'),
-                    style: Theme.of(context).textTheme.displaySmall),
+                Text(
+                  l.get('editPersonalInfo'),
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _firstNameCtrl,
@@ -377,10 +387,11 @@ class _EditPersonalInfoSheetState extends State<_EditPersonalInfoSheet> {
                     prefixIcon: const Icon(Icons.wc_outlined),
                   ),
                   items: [
+                    DropdownMenuItem(value: 'Male', child: Text(l.get('male'))),
                     DropdownMenuItem(
-                        value: 'Male', child: Text(l.get('male'))),
-                    DropdownMenuItem(
-                        value: 'Female', child: Text(l.get('female'))),
+                      value: 'Female',
+                      child: Text(l.get('female')),
+                    ),
                   ],
                   onChanged: (v) {
                     if (v != null) setState(() => _gender = v);
@@ -393,8 +404,7 @@ class _EditPersonalInfoSheetState extends State<_EditPersonalInfoSheet> {
                     child: TextFormField(
                       decoration: InputDecoration(
                         labelText: l.get('dateOfBirth'),
-                        prefixIcon:
-                            const Icon(Icons.calendar_today_outlined),
+                        prefixIcon: const Icon(Icons.calendar_today_outlined),
                       ),
                       controller: TextEditingController(
                         text: '${_dob.day}/${_dob.month}/${_dob.year}',
@@ -410,7 +420,9 @@ class _EditPersonalInfoSheetState extends State<_EditPersonalInfoSheet> {
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.white),
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : Text(l.get('saveChanges')),
                 ),
@@ -445,15 +457,15 @@ class _EditPersonalInfoSheetState extends State<_EditPersonalInfoSheet> {
       widget.onSaved();
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(widget.l.get('profileUpdated'))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(widget.l.get('profileUpdated'))));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${widget.l.get('error')}: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${widget.l.get('error')}: $e')));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -490,19 +502,17 @@ class _EditMedicalRecordSheetState
   bool _saving = false;
   bool _loadedExisting = false;
 
-  bool get _isFemale =>
-      widget.profile.gender.toLowerCase() == 'female';
+  bool get _isFemale => widget.profile.gender.toLowerCase() == 'female';
 
-  static const _bloodTypes = [
-    'A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-',
-  ];
+  static const _bloodTypes = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
   @override
   void initState() {
     super.initState();
     _bloodType = widget.profile.bloodType;
     _weightCtrl = TextEditingController(
-        text: widget.profile.weightKg?.toString() ?? '');
+      text: widget.profile.weightKg?.toString() ?? '',
+    );
     _smoker = widget.profile.smoker ?? false;
     _pregnant = widget.profile.pregnant ?? false;
   }
@@ -513,8 +523,10 @@ class _EditMedicalRecordSheetState
     super.dispose();
   }
 
-  void _loadExistingSelections(List<AllergyConditionModel> allItems,
-      List<String> existingIds) {
+  void _loadExistingSelections(
+    List<AllergyConditionModel> allItems,
+    List<String> existingIds,
+  ) {
     if (_loadedExisting) return;
     _loadedExisting = true;
 
@@ -548,8 +560,7 @@ class _EditMedicalRecordSheetState
           ),
           decoration: BoxDecoration(
             color: AppColors.surface.withValues(alpha: 0.95),
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             border: const Border(top: BorderSide(color: AppColors.border)),
           ),
           child: Column(
@@ -576,34 +587,33 @@ class _EditMedicalRecordSheetState
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(l.get('editMedicalRecord'),
-                          style:
-                              Theme.of(context).textTheme.displaySmall),
+                      Text(
+                        l.get('editMedicalRecord'),
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
                       const SizedBox(height: 20),
                       DropdownButtonFormField<String>(
                         initialValue: _bloodType,
                         decoration: InputDecoration(
                           labelText: l.get('bloodTypeLabel'),
-                          prefixIcon:
-                              const Icon(Icons.bloodtype_outlined),
+                          prefixIcon: const Icon(Icons.bloodtype_outlined),
                         ),
                         items: _bloodTypes
-                            .map((t) => DropdownMenuItem(
-                                value: t, child: Text(t)))
+                            .map(
+                              (t) => DropdownMenuItem(value: t, child: Text(t)),
+                            )
                             .toList(),
-                        onChanged: (v) =>
-                            setState(() => _bloodType = v),
+                        onChanged: (v) => setState(() => _bloodType = v),
                       ),
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: _weightCtrl,
-                        keyboardType:
-                            const TextInputType.numberWithOptions(
-                                decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
                         decoration: InputDecoration(
                           labelText: l.get('weightLabel'),
-                          prefixIcon: const Icon(
-                              Icons.monitor_weight_outlined),
+                          prefixIcon: const Icon(Icons.monitor_weight_outlined),
                           suffixText: 'kg',
                         ),
                       ),
@@ -612,8 +622,7 @@ class _EditMedicalRecordSheetState
                         title: Text(l.get('smokerLabel')),
                         value: _smoker,
                         activeTrackColor: AppColors.primary,
-                        onChanged: (v) =>
-                            setState(() => _smoker = v),
+                        onChanged: (v) => setState(() => _smoker = v),
                         contentPadding: EdgeInsets.zero,
                       ),
                       if (_isFemale)
@@ -621,8 +630,7 @@ class _EditMedicalRecordSheetState
                           title: Text(l.get('pregnantLabel')),
                           value: _pregnant,
                           activeTrackColor: AppColors.primary,
-                          onChanged: (v) =>
-                              setState(() => _pregnant = v),
+                          onChanged: (v) => setState(() => _pregnant = v),
                           contentPadding: EdgeInsets.zero,
                         ),
                       const SizedBox(height: 16),
@@ -632,33 +640,35 @@ class _EditMedicalRecordSheetState
                       // Allergies & Conditions
                       allergiesAsync.when(
                         loading: () => const Center(
-                            child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: CircularProgressIndicator(
-                              color: AppColors.primary),
-                        )),
-                        error: (e, _) => Text('Could not load: $e',
-                            style:
-                                const TextStyle(color: AppColors.error)),
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: CircularProgressIndicator(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                        error: (e, _) => Text(
+                          'Could not load: $e',
+                          style: const TextStyle(color: AppColors.error),
+                        ),
                         data: (allItems) {
                           existingIdsAsync.whenData((ids) {
                             _loadExistingSelections(allItems, ids);
                           });
 
                           final allergies = allItems
-                              .where((i) =>
-                                  i.type ==
-                                  AllergyConditionType.allergy)
+                              .where(
+                                (i) => i.type == AllergyConditionType.allergy,
+                              )
                               .toList();
                           final conditions = allItems
-                              .where((i) =>
-                                  i.type ==
-                                  AllergyConditionType.condition)
+                              .where(
+                                (i) => i.type == AllergyConditionType.condition,
+                              )
                               .toList();
 
                           return Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.stretch,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               _EditMultiSelectField(
                                 label: l.get('allergies'),
@@ -697,8 +707,9 @@ class _EditMedicalRecordSheetState
                                 height: 20,
                                 width: 20,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white),
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
                               )
                             : Text(l.get('saveChanges')),
                       ),
@@ -727,10 +738,7 @@ class _EditMedicalRecordSheetState
         'pregnant': _isFemale ? _pregnant : false,
       });
 
-      final allSelectedIds = {
-        ..._selectedAllergyIds,
-        ..._selectedConditionIds,
-      };
+      final allSelectedIds = {..._selectedAllergyIds, ..._selectedConditionIds};
       await profileService.setUserAllergiesAndConditions(
         userId,
         allSelectedIds.toList(),
@@ -739,15 +747,15 @@ class _EditMedicalRecordSheetState
       widget.onSaved();
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(widget.l.get('profileUpdated'))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(widget.l.get('profileUpdated'))));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${widget.l.get('error')}: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${widget.l.get('error')}: $e')));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -790,25 +798,31 @@ class _EditMultiSelectField extends StatelessWidget {
           children: [
             Icon(icon, size: 18, color: AppColors.primary),
             const SizedBox(width: 8),
-            Text(label,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
             const Spacer(),
             if (selectedIds.isNotEmpty)
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text('${selectedIds.length}',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700)),
+                child: Text(
+                  '${selectedIds.length}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
           ],
         ),
@@ -830,8 +844,7 @@ class _EditMultiSelectField extends StatelessWidget {
           },
           child: Container(
             width: double.infinity,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(14),
@@ -841,9 +854,7 @@ class _EditMultiSelectField extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    selectedNames.isEmpty
-                        ? hint
-                        : selectedNames.join(', '),
+                    selectedNames.isEmpty ? hint : selectedNames.join(', '),
                     style: TextStyle(
                       fontSize: 14,
                       color: selectedNames.isEmpty
@@ -854,8 +865,10 @@ class _EditMultiSelectField extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(Icons.keyboard_arrow_down,
-                    color: AppColors.textSecondary),
+                const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: AppColors.textSecondary,
+                ),
               ],
             ),
           ),
@@ -865,38 +878,53 @@ class _EditMultiSelectField extends StatelessWidget {
           Wrap(
             spacing: 6,
             runSpacing: 6,
-            children: selectedNames.take(5).map((name) {
-              return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.3)),
-                ),
-                child: Text(name,
-                    style: const TextStyle(
-                        fontSize: 11, color: AppColors.primary)),
-              );
-            }).toList()
-              ..addAll(selectedNames.length > 5
-                  ? [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant
-                              .withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text('+${selectedNames.length - 5} more',
-                            style: const TextStyle(
-                                fontSize: 11,
-                                color: AppColors.textSecondary)),
+            children:
+                selectedNames.take(5).map((name) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.3),
                       ),
-                    ]
-                  : []),
+                    ),
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  );
+                }).toList()..addAll(
+                  selectedNames.length > 5
+                      ? [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceVariant.withValues(
+                                alpha: 0.3,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '+${selectedNames.length - 5} more',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ]
+                      : [],
+                ),
           ),
         ],
       ],
@@ -935,9 +963,11 @@ class _EditMultiSelectSheetState extends State<_EditMultiSelectSheet> {
     if (_searchQuery.isEmpty) return widget.items;
     final q = _searchQuery.toLowerCase();
     return widget.items
-        .where((i) =>
-            i.name.toLowerCase().contains(q) ||
-            (i.nameAr?.contains(_searchQuery) ?? false))
+        .where(
+          (i) =>
+              i.name.toLowerCase().contains(q) ||
+              (i.nameAr?.contains(_searchQuery) ?? false),
+        )
         .toList();
   }
 
@@ -949,17 +979,16 @@ class _EditMultiSelectSheetState extends State<_EditMultiSelectSheet> {
       minChildSize: 0.3,
       expand: false,
       builder: (_, controller) => ClipRRect(
-        borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.surface.withValues(alpha: 0.95),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(24)),
-              border:
-                  const Border(top: BorderSide(color: AppColors.border)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+              border: const Border(top: BorderSide(color: AppColors.border)),
             ),
             child: Column(
               children: [
@@ -977,25 +1006,30 @@ class _EditMultiSelectSheetState extends State<_EditMultiSelectSheet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(widget.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w700)),
+                      Text(
+                        widget.title,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       TextButton(
-                        onPressed: () =>
-                            Navigator.pop(context, _selected),
+                        onPressed: () => Navigator.pop(context, _selected),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             gradient: AppColors.primaryGradient,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text('Done',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600)),
+                          child: const Text(
+                            'Done',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -1004,18 +1038,19 @@ class _EditMultiSelectSheetState extends State<_EditMultiSelectSheet> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
                   child: TextField(
-                    onChanged: (v) =>
-                        setState(() => _searchQuery = v),
+                    onChanged: (v) => setState(() => _searchQuery = v),
                     decoration: InputDecoration(
                       hintText: 'Search...',
-                      prefixIcon:
-                          const Icon(Icons.search, size: 20),
+                      prefixIcon: const Icon(Icons.search, size: 20),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       filled: true,
-                      fillColor: AppColors.surfaceVariant
-                          .withValues(alpha: 0.3),
+                      fillColor: AppColors.surfaceVariant.withValues(
+                        alpha: 0.3,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                         borderSide: BorderSide.none,
@@ -1025,29 +1060,29 @@ class _EditMultiSelectSheetState extends State<_EditMultiSelectSheet> {
                 ),
                 if (_selected.isNotEmpty)
                   Padding(
-                    padding:
-                        const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         '${_selected.length} selected',
                         style: const TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600),
+                          color: AppColors.primary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                const Divider(
-                    height: 1, color: AppColors.divider),
+                const Divider(height: 1, color: AppColors.divider),
                 Expanded(
                   child: ListView.builder(
                     controller: controller,
                     itemCount: _filteredItems.length,
-                    itemBuilder: (_, i) {
-                      final item = _filteredItems[i];
-                      final checked = _selected
-                          .contains(item.allergyConditionId);
+                    itemBuilder: (_, index) {
+                      final item = _filteredItems[index];
+                      final checked = _selected.contains(
+                        item.allergyConditionId,
+                      );
                       return CheckboxListTile(
                         value: checked,
                         title: Text(
@@ -1066,16 +1101,14 @@ class _EditMultiSelectSheetState extends State<_EditMultiSelectSheet> {
                         activeColor: AppColors.primary,
                         checkColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         onChanged: (v) {
                           setState(() {
                             if (v == true) {
-                              _selected
-                                  .add(item.allergyConditionId);
+                              _selected.add(item.allergyConditionId);
                             } else {
-                              _selected.remove(
-                                  item.allergyConditionId);
+                              _selected.remove(item.allergyConditionId);
                             }
                           });
                         },
@@ -1106,10 +1139,10 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-              letterSpacing: 0.5,
-            ),
+          color: AppColors.textSecondary,
+          fontSize: 12,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
@@ -1150,11 +1183,12 @@ class _InfoRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColors.textSecondary)),
+        Text(
+          label,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+        ),
         const SizedBox(width: 16),
         Expanded(
           child: Text(
@@ -1186,8 +1220,10 @@ class _ProfileTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(icon, color: AppColors.primary),
         title: Text(label, style: Theme.of(context).textTheme.bodyMedium),
-        trailing:
-            const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+        trailing: const Icon(
+          Icons.chevron_right,
+          color: AppColors.textSecondary,
+        ),
         onTap: onTap,
       ),
     );

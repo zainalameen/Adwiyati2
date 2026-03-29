@@ -25,7 +25,7 @@ class MainScaffold extends StatelessWidget {
     final location = GoRouterState.of(context).matchedLocation;
     return switch (location) {
       AppRoutes.home => 'Home',
-      AppRoutes.chatbot => 'AI Assistant',
+      AppRoutes.chatbot => 'Health Assistant',
       AppRoutes.scan => 'Scan Medication',
       AppRoutes.treatments => 'Treatments',
       AppRoutes.cabinet => 'My Cabinet',
@@ -46,13 +46,13 @@ class MainScaffold extends StatelessWidget {
         title: Text(
           _titleForLocation(context),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                shadows: [
-                  Shadow(
-                    color: AppColors.primaryLight.withValues(alpha: 0.5),
-                    blurRadius: 20,
-                  ),
-                ],
+            shadows: [
+              Shadow(
+                color: AppColors.primaryLight.withValues(alpha: 0.5),
+                blurRadius: 20,
               ),
+            ],
+          ),
         ),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -63,7 +63,9 @@ class MainScaffold extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.border, width: 2),
                 image: const DecorationImage(
-                  image: NetworkImage('https://api.dicebear.com/7.x/avataaars/png?seed=Felix'),
+                  image: NetworkImage(
+                    'https://api.dicebear.com/7.x/avataaars/png?seed=Felix',
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -125,10 +127,30 @@ class MainScaffold extends StatelessWidget {
                   showUnselectedLabels: false,
                   items: [
                     _buildNavItem(Icons.home_outlined, Icons.home, 0, index),
-                    _buildNavItem(Icons.chat_bubble_outline, Icons.chat_bubble, 1, index),
-                    _buildNavItem(Icons.qr_code_scanner, Icons.qr_code_scanner, 2, index),
-                    _buildNavItem(Icons.medication_outlined, Icons.medication, 3, index),
-                    _buildNavItem(Icons.inventory_2_outlined, Icons.inventory_2, 4, index),
+                    _buildNavItem(
+                      Icons.chat_bubble_outline,
+                      Icons.chat_bubble,
+                      1,
+                      index,
+                    ),
+                    _buildNavItem(
+                      Icons.qr_code_scanner,
+                      Icons.qr_code_scanner,
+                      2,
+                      index,
+                    ),
+                    _buildNavItem(
+                      Icons.medication_outlined,
+                      Icons.medication,
+                      3,
+                      index,
+                    ),
+                    _buildNavItem(
+                      Icons.inventory_2_outlined,
+                      Icons.inventory_2,
+                      4,
+                      index,
+                    ),
                   ],
                 ),
               ),
@@ -140,24 +162,34 @@ class MainScaffold extends StatelessWidget {
   }
 
   BottomNavigationBarItem _buildNavItem(
-      IconData unselectedIcon, IconData selectedIcon, int itemIndex, int currentIndex) {
+    IconData unselectedIcon,
+    IconData selectedIcon,
+    int itemIndex,
+    int currentIndex,
+  ) {
     final isSelected = itemIndex == currentIndex;
-    
+
     return BottomNavigationBarItem(
       icon: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutCubic,
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: isSelected ? 12 : 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: isSelected ? 12 : 8,
+        ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : Colors.transparent,
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.15)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: ShaderMask(
           blendMode: isSelected ? BlendMode.srcIn : BlendMode.dst,
           shaderCallback: (bounds) => isSelected
               ? AppColors.primaryGradient.createShader(bounds)
-              : const LinearGradient(colors: [AppColors.textSecondary, AppColors.textSecondary])
-                  .createShader(bounds),
+              : const LinearGradient(
+                  colors: [AppColors.textSecondary, AppColors.textSecondary],
+                ).createShader(bounds),
           child: Icon(
             isSelected ? selectedIcon : unselectedIcon,
             size: 26,
@@ -203,9 +235,9 @@ class MainScaffold extends StatelessWidget {
                     Text(
                       'Add New',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const Spacer(),
                     IconButton(

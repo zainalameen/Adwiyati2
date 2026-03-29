@@ -16,8 +16,8 @@ class AppLocalizations {
 
   bool get isArabic => locale.languageCode == 'ar';
 
-  String get(String key) => (_strings[locale.languageCode] ?? _strings['en']!)
-      [key] ?? key;
+  String get(String key) =>
+      (_strings[locale.languageCode] ?? _strings['en']!)[key] ?? key;
 
   // ── String tables ─────────────────────────────────────────────────────
 
@@ -67,9 +67,8 @@ class AppLocalizations {
     'verifyEmail': 'Verify your email',
     'verifyMessage':
         'A confirmation link has been sent to your email address. '
-            'Click it to continue.',
-    'checkSpam':
-        "If you don't see the email, check your spam folder.",
+        'Click it to continue.',
+    'checkSpam': "If you don't see the email, check your spam folder.",
     'resendEmail': 'Resend Email',
     'backToSignIn': 'Back to Sign In',
 
@@ -175,8 +174,7 @@ class AppLocalizations {
     'verifyEmail': 'تحقق من بريدك الإلكتروني',
     'verifyMessage':
         'تم إرسال رابط تأكيد إلى بريدك الإلكتروني. اضغط عليه للمتابعة.',
-    'checkSpam':
-        'إذا لم تجد البريد، تحقق من مجلد الرسائل غير المرغوب فيها.',
+    'checkSpam': 'إذا لم تجد البريد، تحقق من مجلد الرسائل غير المرغوب فيها.',
     'resendEmail': 'إعادة إرسال البريد',
     'backToSignIn': 'العودة إلى تسجيل الدخول',
 
@@ -247,8 +245,7 @@ class _AppLocalizationsDelegate
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) =>
-      ['en', 'ar'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => ['en', 'ar'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) async =>
@@ -267,9 +264,11 @@ class LocaleNotifier extends Notifier<Locale> {
 
   void setLocale(Locale locale) => state = locale;
 
-  void toggle() =>
-      state = state.languageCode == 'en' ? const Locale('ar') : const Locale('en');
+  void toggle() => state = state.languageCode == 'en'
+      ? const Locale('ar')
+      : const Locale('en');
 }
 
-final localeProvider =
-    NotifierProvider<LocaleNotifier, Locale>(LocaleNotifier.new);
+final localeProvider = NotifierProvider<LocaleNotifier, Locale>(
+  LocaleNotifier.new,
+);

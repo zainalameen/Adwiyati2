@@ -9,12 +9,7 @@ class DoseTile extends StatelessWidget {
   final VoidCallback? onTaken;
   final VoidCallback? onSkipped;
 
-  const DoseTile({
-    super.key,
-    required this.dose,
-    this.onTaken,
-    this.onSkipped,
-  });
+  const DoseTile({super.key, required this.dose, this.onTaken, this.onSkipped});
 
   static const _pillColors = [
     Color(0xFF00C9A7),
@@ -63,9 +58,11 @@ class DoseTile extends StatelessWidget {
                     children: [
                       Text(
                         dose.medicationName,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              decoration:
-                                  isSkipped ? TextDecoration.lineThrough : null,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              decoration: isSkipped
+                                  ? TextDecoration.lineThrough
+                                  : null,
                               color: isSkipped ? AppColors.textSecondary : null,
                             ),
                       ),
@@ -74,15 +71,20 @@ class DoseTile extends StatelessWidget {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.access_time,
-                                    size: 12, color: AppColors.primary),
+                                const Icon(
+                                  Icons.access_time,
+                                  size: 12,
+                                  color: AppColors.primary,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   dose.formattedTime,
@@ -149,10 +151,16 @@ class DoseTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.textDisabled.withValues(alpha: 0.5)),
+                border: Border.all(
+                  color: AppColors.textDisabled.withValues(alpha: 0.5),
+                ),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close, color: AppColors.textSecondary, size: 20),
+              child: const Icon(
+                Icons.close,
+                color: AppColors.textSecondary,
+                size: 20,
+              ),
             ),
           ),
         ),

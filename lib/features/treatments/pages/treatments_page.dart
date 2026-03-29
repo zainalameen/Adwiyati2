@@ -37,13 +37,9 @@ class _TreatmentsPageState extends ConsumerState<TreatmentsPage> {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 child: Row(
                   children: [
-                    _ProfileChip(
-                      onTap: () => context.push(AppRoutes.profile),
-                    ),
+                    _ProfileChip(onTap: () => context.push(AppRoutes.profile)),
                     const Spacer(),
-                    _FabAdd(
-                      onTap: () => context.push(AppRoutes.scan),
-                    ),
+                    _FabAdd(onTap: () => context.push(AppRoutes.scan)),
                   ],
                 ),
               ),
@@ -84,9 +80,7 @@ class _TreatmentsPageState extends ConsumerState<TreatmentsPage> {
                           ),
                         ),
                   loading: () => const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
+                    child: CircularProgressIndicator(color: AppColors.primary),
                   ),
                   error: (e, _) => Center(
                     child: Padding(
@@ -94,10 +88,9 @@ class _TreatmentsPageState extends ConsumerState<TreatmentsPage> {
                       child: Text(
                         'Could not load treatments.\n$e',
                         textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: AppColors.textSecondary),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ),
                   ),
@@ -179,10 +172,7 @@ class _SegmentedTabs extends StatelessWidget {
   final int segment;
   final ValueChanged<int> onChanged;
 
-  const _SegmentedTabs({
-    required this.segment,
-    required this.onChanged,
-  });
+  const _SegmentedTabs({required this.segment, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -249,12 +239,10 @@ class _SegmentButton extends StatelessWidget {
             label,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: selected
-                      ? AppColors.primary
-                      : AppColors.textSecondary,
-                  fontSize: 13,
-                ),
+              fontWeight: FontWeight.w700,
+              color: selected ? AppColors.primary : AppColors.textSecondary,
+              fontSize: 13,
+            ),
           ),
         ),
       ),
@@ -266,10 +254,7 @@ class _TreatmentCard extends StatelessWidget {
   final TreatmentWithMedication item;
   final VoidCallback onTap;
 
-  const _TreatmentCard({
-    required this.item,
-    required this.onTap,
-  });
+  const _TreatmentCard({required this.item, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -313,16 +298,16 @@ class _TreatmentCard extends StatelessWidget {
                     Text(
                       item.displayTitle,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
-                          ),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       item.typeLabel,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Row(
@@ -336,9 +321,7 @@ class _TreatmentCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             item.scheduleLabel,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
+                            style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(color: AppColors.textDisabled),
                           ),
                         ),
@@ -347,10 +330,7 @@ class _TreatmentCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textDisabled,
-              ),
+              Icon(Icons.chevron_right_rounded, color: AppColors.textDisabled),
             ],
           ),
         ),
@@ -387,10 +367,9 @@ class _EmptyState extends StatelessWidget {
                   isActive
                       ? 'No active treatments yet'
                       : 'No completed treatments',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: AppColors.textSecondary),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),

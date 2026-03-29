@@ -104,7 +104,8 @@ class UserAchievement {
     return UserAchievement(
       achievementId: json['achievement_id'] as String,
       userId: json['user_id'] as String,
-      type: AchievementType.fromString(json['achievement_type'] as String) ??
+      type:
+          AchievementType.fromString(json['achievement_type'] as String) ??
           AchievementType.firstDose,
       achievedAt: DateTime.parse(json['achieved_at'] as String),
     );

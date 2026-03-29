@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,19 +49,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 8),
-                  Text(l.get('welcomeBack'),
-                          style: Theme.of(context).textTheme.displayLarge)
-                      .animate()
-                      .fadeIn(duration: 400.ms)
-                      .slideY(begin: 0.15),
+                  Text(
+                    l.get('welcomeBack'),
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.15),
                   const SizedBox(height: 6),
-                  Text(l.get('signInToAccount'),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: AppColors.textSecondary))
-                      .animate()
-                      .fadeIn(duration: 400.ms, delay: 80.ms),
+                  Text(
+                    l.get('signInToAccount'),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ).animate().fadeIn(duration: 400.ms, delay: 80.ms),
                   const SizedBox(height: 28),
 
                   if (_errorMessage != null) ...[
@@ -71,56 +68,63 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ],
 
                   GlassCard(
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _emailCtrl,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            labelText: l.get('email'),
-                            hintText: l.get('emailHint'),
-                            prefixIcon: const Icon(Icons.email_outlined),
-                          ),
-                          validator: (v) => (v == null || !v.contains('@'))
-                              ? l.get('invalidEmail')
-                              : null,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _passwordCtrl,
-                          obscureText: _obscurePassword,
-                          textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (_) => _submit(),
-                          decoration: InputDecoration(
-                            labelText: l.get('password'),
-                            hintText: l.get('passwordHint'),
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            suffixIcon: IconButton(
-                              icon: Icon(_obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined),
-                              onPressed: () => setState(
-                                  () => _obscurePassword = !_obscurePassword),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _emailCtrl,
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              decoration: InputDecoration(
+                                labelText: l.get('email'),
+                                hintText: l.get('emailHint'),
+                                prefixIcon: const Icon(Icons.email_outlined),
+                              ),
+                              validator: (v) => (v == null || !v.contains('@'))
+                                  ? l.get('invalidEmail')
+                                  : null,
                             ),
-                          ),
-                          validator: (v) => (v == null || v.length < 6)
-                              ? l.get('passwordTooShort')
-                              : null,
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _passwordCtrl,
+                              obscureText: _obscurePassword,
+                              textInputAction: TextInputAction.done,
+                              onFieldSubmitted: (_) => _submit(),
+                              decoration: InputDecoration(
+                                labelText: l.get('password'),
+                                hintText: l.get('passwordHint'),
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                  ),
+                                  onPressed: () => setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  ),
+                                ),
+                              ),
+                              validator: (v) => (v == null || v.length < 6)
+                                  ? l.get('passwordTooShort')
+                                  : null,
+                            ),
+                            const SizedBox(height: 4),
+                            Align(
+                              alignment: isAr
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () =>
+                                    context.push(AppRoutes.forgotPassword),
+                                child: Text(l.get('forgotPassword')),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        Align(
-                          alignment:
-                              isAr ? Alignment.centerLeft : Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () =>
-                                context.push(AppRoutes.forgotPassword),
-                            child: Text(l.get('forgotPassword')),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn(duration: 500.ms, delay: 150.ms).slideY(begin: 0.1),
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 150.ms)
+                      .slideY(begin: 0.1),
                   const SizedBox(height: 24),
 
                   GradientButton(
@@ -133,8 +137,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(l.get('dontHaveAccount'),
-                          style: TextStyle(color: AppColors.textSecondary)),
+                      Text(
+                        l.get('dontHaveAccount'),
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
                       TextButton(
                         onPressed: () =>
                             context.pushReplacement(AppRoutes.signup),
@@ -158,10 +164,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       _errorMessage = null;
     });
     try {
-      await ref.read(authServiceProvider).signIn(
-            email: _emailCtrl.text.trim(),
-            password: _passwordCtrl.text,
-          );
+      await ref
+          .read(authServiceProvider)
+          .signIn(email: _emailCtrl.text.trim(), password: _passwordCtrl.text);
       if (!mounted) return;
       context.go(AppRoutes.home);
     } on AuthServiceException catch (e) {
